@@ -16,7 +16,7 @@ export function App() {
     transformer: SuperJSON,
     links: [
       httpBatchLink({
-        url: import.meta.env.API_URL || 'http://localhost:3001/trpc'
+        url: 'https://pcm-luiz-api.onrender.com/trpc'
       })
     ]
   }));
