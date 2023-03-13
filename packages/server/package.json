@@ -7,7 +7,9 @@
     "node": "18"
   },
   "scripts": {
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "build": "tsup src",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@prisma/client": "^4.11.0",
@@ -16,6 +18,7 @@
     "express": "^4.17.1",
     "superjson": "^1.12.2",
     "trpc-playground": "^1.0.4",
+    "tsup": "^6.6.3",
     "zod": "^3.21.4"
   },
   "devDependencies": {
