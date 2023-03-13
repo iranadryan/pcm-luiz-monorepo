@@ -16,7 +16,7 @@ export function App() {
     transformer: SuperJSON,
     links: [
       httpBatchLink({
-        url: process.env.API_URL || 'http://localhost:3001/trpc'
+        url: import.meta.env.API_URL || 'http://localhost:3001/trpc'
       })
     ]
   }));
