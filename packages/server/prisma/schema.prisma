@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Truck {
+  id           String         @id @default(uuid())
+  name         String
+  plate        String         @unique
+  type         TruckType
+  ServiceOrder ServiceOrder[]
+
+  @@map("trucks")
+}
+
+enum TruckType {
+  TRACTOR_UNIT
+  SEMI_TRAILER
+}
+
+model Person {
+  id                  String                @id @default(uuid())
+  code                Int?                  @unique
+  name                String
+  role                PersonRole
+  ServiceOrder        ServiceOrder[]
+  ServiceOrderService ServiceOrderService[]
+
+  @@map("people")
+}
+
+enum PersonRole {
+  DRIVER
+  MECHANIC
+}
+
+model Service {
+  id                  String                @id @default(uuid())
+  code                Int                   @unique
+  name                String
+  ServiceOrderService ServiceOrderService[]
+
+  @@map("services")
+}
+
+model Product {
+  id                          String                        @id @default(uuid())
+  code                        Int                           @unique
+  name                        String
+  ServiceOrderServiceMaterial ServiceOrderServiceMaterial[]
+
+  @@map("products")
+}
+
+model ServiceOrder {
+  id                  String                @id @default(uuid())
+  number              Int?
+  truck               Truck                 @relation(fields: [truckId], references: [id])
+  truckId             String
+  odometer            Int
+  driver              Person                @relation(fields: [driverId], references: [id])
+  driverId            String
+  startDate           DateTime              @db.Date
+  startTime           DateTime              @db.Time()
+  endDate             DateTime?             @db.Date
+  endTime             DateTime?             @db.Time()
+  observation         String?
+  status              ServiceOrderStatus    @default(OPEN)
+  ServiceOrderService ServiceOrderService[]
+
+  @@map("service_orders")
+}
+
+enum ServiceOrderStatus {
+  OPEN
+  CLOSED
+}
+
+model ServiceOrderService {
+  id                          String                        @id @default(uuid())
+  service                     Service                       @relation(fields: [serviceId], references: [id])
+  serviceId                   String
+  executor                    Person                        @relation(fields: [executorId], references: [id])
+  executorId                  String
+  startTime                   DateTime                      @db.Time()
+  endDate                     DateTime                      @db.Date
+  endTime                     DateTime                      @db.Time()
+  serviceOrder                ServiceOrder                  @relation(fields: [serviceOrderId], references: [id])
+  serviceOrderId              String
+  ServiceOrderServiceMaterial ServiceOrderServiceMaterial[]
+
+  @@map("service_orders_services")
+}
+
+model ServiceOrderServiceMaterial {
+  id                    String              @id @default(uuid())
+  material              Product             @relation(fields: [materialId], references: [id])
+  materialId            String
+  quantity              Float
+  serviceOrderService   ServiceOrderService @relation(fields: [serviceOrderServiceId], references: [id])
+  serviceOrderServiceId String
+
+  @@map("service_orders_services_materials")
+}
