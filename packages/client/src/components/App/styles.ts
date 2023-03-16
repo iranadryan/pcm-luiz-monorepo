@@ -6,4 +6,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
 `;

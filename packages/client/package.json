@@ -16,9 +16,11 @@
     "@trpc/client": "^10.15.0",
     "@trpc/react-query": "^10.15.0",
     "@trpc/server": "^10.15.0",
-    "antd": "^5.2.3",
+    "lottie-react": "^2.4.0",
     "moment": "^2.29.4",
     "phosphor-react": "^1.4.1",
+    "primeicons": "^6.0.1",
+    "primereact": "^9.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-imask": "^6.4.3",
@@ -26,7 +28,8 @@
     "react-input-mask": "^2.0.4",
     "react-router-dom": "^6.8.2",
     "styled-components": "^5.3.8",
-    "superjson": "^1.12.2"
+    "superjson": "^1.12.2",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",

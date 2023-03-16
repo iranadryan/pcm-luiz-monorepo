@@ -5,10 +5,13 @@ import SuperJSON from 'superjson';
 import { trpc } from '../../lib/trpc';
 
 import { GlobalStyles } from '../../styles/GlobalStyles';
-import { AntSelectStyles } from '../../styles/AntSelectStyles';
+import { SelectModalStyles } from '../../styles/SelectModalStyles';
 import { Header } from '../Header';
 import { Container } from './styles';
 import { Routes } from '../../Routes';
+
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
 
 export function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -17,6 +20,7 @@ export function App() {
     links: [
       httpBatchLink({
         url: 'https://pcm-luiz-api.onrender.com/trpc'
+        // url: 'http://localhost:3001/trpc'
       })
     ]
   }));
@@ -25,7 +29,7 @@ export function App() {
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <Container>
-          <AntSelectStyles />
+          <SelectModalStyles />
           <GlobalStyles />
           <Header />
           <Routes />

@@ -1,4 +1,3 @@
-import { CaretDown } from 'phosphor-react';
 import { StyledSelect, Wrapper } from './styles';
 
 export type Option = {
@@ -12,6 +11,7 @@ interface SelectProps {
   placeholder?: string;
   selected: string | null;
   onSelect: (value: string) => void;
+  isModal?: boolean;
 }
 
 export function Select({
@@ -19,19 +19,18 @@ export function Select({
   options,
   placeholder,
   selected,
-  onSelect
+  onSelect,
+  isModal = false,
 }: SelectProps) {
   return (
     <Wrapper>
       {label && <label>{label}</label>}
       <StyledSelect
         options={options}
-        suffixIcon={<CaretDown size={20} color="#005125" weight="bold" />}
         placeholder={placeholder}
         value={selected}
-        onSelect={(value) => {
-          onSelect(value as string);
-        }}
+        onChange={(e) => onSelect(e.value)}
+        panelClassName={isModal ? 'modal' : ''}
       />
     </Wrapper>
   );

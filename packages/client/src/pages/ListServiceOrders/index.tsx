@@ -9,13 +9,13 @@ import { Input } from '../../components/Input';
 import { Select } from '../../components/Select';
 import { ServiceOrderCard } from './components/ServiceOrderCard';
 import { NoData } from '../../components/NoData';
+import { Loader } from '../../components/Loader';
 
 export function ListServiceOrders() {
   const [statusSelected, setStatusSelected] = useState('ALL');
   const [filterInput, setFilterInput] = useState('');
 
   const { data: serviceOrders } = trpc.serviceOrder.list.useQuery();
-  console.log(serviceOrders);
   const serviceOrdersToShow = useMemo(() => serviceOrders
     ? serviceOrders.filter(
       (serviceOrder) => (
@@ -28,6 +28,7 @@ export function ListServiceOrders() {
 
   return (
     <Container>
+      <Loader isLoading={!serviceOrders} />
       <Link to="new" className="new-order">
         <Plus color="#FFFFFF" size={24} weight="bold" />
       </Link>

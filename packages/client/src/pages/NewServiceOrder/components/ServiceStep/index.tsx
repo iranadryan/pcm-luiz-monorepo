@@ -1,6 +1,6 @@
 import { Plus, Trash } from 'phosphor-react';
 import { useState } from 'react';
-import { Activity, FormData, Material } from '../..';
+import { FormData, Material, Service } from '../..';
 import { Button } from '../../../../components/Button';
 import { DateInput } from '../../../../components/DateInput';
 import { Option, Select } from '../../../../components/Select';
@@ -9,9 +9,9 @@ import { NoData } from '../../../../components/NoData';
 import { ActivitiesList, ActivityInput } from './styles';
 import { AddMaterialModal } from '../AddMaterialModal';
 
-interface ActivityStepProps {
-  activityOptions: Option[];
-  performerOptions: Option[];
+interface ServiceStepProps {
+  serviceOptions: Option[];
+  executorOptions: Option[];
   materialOptions: Option[];
   materialUnits: {
     id: string;
@@ -19,88 +19,89 @@ interface ActivityStepProps {
   }[];
   data: FormData;
   onDataChange: (
-    name: keyof FormData, data: string | number | Activity[]
+    name: keyof FormData,
+    data: string | number | null | undefined | Service[]
   ) => void;
 }
 
-export function ActivitiesStep({
-  activityOptions,
-  performerOptions,
+export function ServiceStep({
+  serviceOptions,
+  executorOptions,
   materialOptions,
   materialUnits,
   data,
   onDataChange,
-}: ActivityStepProps) {
-  const [selectedActivity, setSelectedActivity] = useState<string | null>(null);
+}: ServiceStepProps) {
+  const [selectedService, setSelectedService] = useState<string | null>(null);
   const [materialModalIsVisible, setMaterialModalIsVisible] = useState(false);
   const [
-    addMaterialActivityId,
-    setAddMaterialActivityId
+    addMaterialServiceId,
+    setAddMaterialServiceId
   ] = useState<null | string>(null);
 
-  function handleAddActivity() {
-    const activities = [...data.activities];
+  function handleAddService() {
+    const services = [...data.services];
 
-    if (!selectedActivity) {
+    if (!selectedService) {
       return;
     }
 
-    activities.push({
+    services.push({
       id: self.crypto.randomUUID(),
-      activityId: selectedActivity,
-      name: activityOptions.find(
-        (option) => option.value === selectedActivity
+      serviceId: selectedService,
+      name: serviceOptions.find(
+        (option) => option.value === selectedService
       )?.label || '',
       startTime: data.startTime,
       endTime: data.startTime,
       endDate: data.startDate,
-      performer: null,
+      executorId: '',
       materials: []
     });
 
-    onDataChange('activities', activities);
+    onDataChange('services', services);
   }
 
-  function handleRemoveActivity(activityId: string) {
-    let activities = [...data.activities];
-    activities = activities.filter(({ id }) => id !== activityId);
+  function handleRemoveService(id: string) {
+    let services = [...data.services];
+    services = services.filter((service) => service.id !== id);
 
-    onDataChange('activities', activities);
+    onDataChange('services', services);
   }
 
-  function handleChangeActivityData(
+  function handleChangeServiceData(
     id: string,
-    name: keyof Activity,
-    value: string | number
+    name: keyof Service,
+    value: string
   ) {
-    const activities = [...data.activities];
-    const activityIndex = activities.findIndex(
-      (activity) => activity.id === id
+    const services = [...data.services];
+    const serviceIndex = services.findIndex(
+      (service) => service.id === id
     );
 
-    if (activityIndex === -1) {
+    if (serviceIndex === -1) {
       return;
     }
 
-    activities[activityIndex] = {
-      ...activities[activityIndex],
+    services[serviceIndex] = {
+      ...services[serviceIndex],
       [name]: value,
     };
 
-    onDataChange('activities', activities);
+    onDataChange('services', services);
   }
 
-  function handleAddMaterial(activityId: string, material: Material) {
-    const activities = [...data.activities];
-    const activityIndex = activities.findIndex(
-      (activity) => activity.id === activityId
+  function handleAddMaterial(serviceId: string, material: Material) {
+    const services = [...data.services];
+    const serviceIndex = services.findIndex(
+      (service) => service.id === serviceId
     );
 
-    if (activityIndex === -1) {
+    if (serviceIndex === -1) {
       return;
     }
 
-    const materials = [...data.activities[activityIndex].materials];
+    const materials = [...data.services[serviceIndex].materials];
     const materialAlreadyExists = materials.find(
       ({ id }) => id === material.id
     );
@@ -111,33 +112,35 @@ export function ActivitiesStep({
 
     materials.push(material);
 
-    activities[activityIndex] = {
-      ...activities[activityIndex],
+    services[serviceIndex] = {
+      ...services[serviceIndex],
       materials: materials,
     };
 
-    onDataChange('activities', activities);
+    onDataChange('services', services);
   }
 
-  function handleRemoveMaterial(activityId: string, materialId: string) {
-    const activities = [...data.activities];
-    const activityIndex = activities.findIndex(
-      (activity) => activity.id === activityId
+  function handleRemoveMaterial(serviceId: string, materialId: string) {
+    const services = [...data.services];
+    const serviceIndex = services.findIndex(
+      (service) => service.id === serviceId
     );
 
-    if (activityIndex === -1) {
+    if (serviceIndex === -1) {
       return;
     }
 
-    let materials = [...data.activities[activityIndex].materials];
-    materials = materials.filter(({ id }) => id !== materialId);
+    let materials = [...data.services[serviceIndex].materials];
+    materials = materials.filter(
+      (material) => material.id !== materialId
+    );
 
-    activities[activityIndex] = {
-      ...activities[activityIndex],
+    services[serviceIndex] = {
+      ...services[serviceIndex],
       materials: materials,
     };
 
-    onDataChange('activities', activities);
+    onDataChange('services', services);
   }
 
   return (
@@ -145,7 +148,7 @@ export function ActivitiesStep({
       <AddMaterialModal
         isVisible={materialModalIsVisible}
         closeModal={() => setMaterialModalIsVisible(false)}
-        activityId={addMaterialActivityId}
+        serviceId={addMaterialServiceId}
         materialOptions={materialOptions}
         materialUnits={materialUnits}
         onAddMaterial={handleAddMaterial}
@@ -153,27 +156,27 @@ export function ActivitiesStep({
       <div className="add-activity">
         <Select
           placeholder="Selecione uma atividade"
-          options={activityOptions}
-          selected={selectedActivity}
-          onSelect={setSelectedActivity}
+          options={serviceOptions}
+          selected={selectedService}
+          onSelect={setSelectedService}
         />
-        <button onClick={handleAddActivity}>
+        <button onClick={handleAddService}>
           <Plus color="#FFFFFF" size={20} weight="bold" />
         </button>
       </div>
       <ActivitiesList>
-        {data.activities.length === 0 && (
+        {data.services.length === 0 && (
           <NoData
             title="Nenhuma atividade inserida!"
             text="Aqui você insere as atividades da sua ordem"
           />
         )}
-        {data.activities.map((activity) => (
-          <ActivityInput key={activity.id}>
+        {data.services.map((service) => (
+          <ActivityInput key={service.id}>
             <header>
-              <h3>{activity.name}</h3>
+              <h3>{service.name}</h3>
               <button onClick={
-                () => handleRemoveActivity(activity.id)
+                () => handleRemoveService(service.id)
               }>
                 <Trash size={20} color="#E12729" weight="duotone" />
               </button>
@@ -181,43 +184,45 @@ export function ActivitiesStep({
             <div className="card">
               <TimeInput
                 label="Hora Inicial"
-                value={activity.startTime}
+                value={service.startTime}
                 onChange={(value) => {
-                  handleChangeActivityData(activity.id, 'startTime', value);
+                  handleChangeServiceData(service.id, 'startTime', value);
                 }}
               />
               <TimeInput
                 label="Hora Final"
-                value={activity.endTime}
+                value={service.endTime}
                 onChange={(value) => {
-                  handleChangeActivityData(activity.id, 'endTime', value);
+                  handleChangeServiceData(service.id, 'endTime', value);
                 }}
               />
               <DateInput
                 label="Data Final"
-                value={activity.endDate}
+                value={service.endDate}
                 onChange={(value) => {
-                  handleChangeActivityData(activity.id, 'endDate', value);
+                  handleChangeServiceData(service.id, 'endDate', value);
                 }}
               />
               <Select
                 label="Executante"
                 placeholder="Selecione"
-                options={performerOptions}
-                selected={activity.performer}
+                options={executorOptions}
+                selected={service.executorId}
                 onSelect={(value) => {
-                  handleChangeActivityData(activity.id, 'performer', value);
+                  handleChangeServiceData(service.id, 'executorId', value);
                 }}
               />
-              {activity.materials.length > 0 && (
+              {service.materials.length > 0 && (
                 <div className="stretch material-list">
-                  {activity.materials.map((material) => (
+                  {service.materials.map((material) => (
                     <div key={material.id} className="material-item">
                       <span>{`${material.quantity} ${material.unit}`}</span>
                       <strong>{material.name}</strong>
-                      <button onClick={
-                        () => handleRemoveMaterial(activity.id, material.id)
-                      }>
+                      <button onClick={() => {
+                        handleRemoveMaterial(
+                          service.id, material.id
+                        );
+                      }}>
                         <Trash size={20} color="#E12729" weight="duotone" />
                       </button>
                     </div>
@@ -228,7 +233,7 @@ export function ActivitiesStep({
                 secondary
                 className="right-side"
                 onClick={() => {
-                  setAddMaterialActivityId(activity.id);
+                  setAddMaterialServiceId(service.id);
                   setMaterialModalIsVisible(true);
                 }}
               >

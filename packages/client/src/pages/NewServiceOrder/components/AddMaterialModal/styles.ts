@@ -15,7 +15,7 @@ export const Container = styled.div`
     align-items: center;
     gap: 8px;
 
-    span {
+    .unit {
       margin-top: 20px;
     }
   }

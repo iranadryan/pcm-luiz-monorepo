@@ -6,50 +6,54 @@ import { Button } from '../../components/Button';
 import { Option } from '../../components/Select';
 import { Title } from '../../components/Title';
 import { trpc } from '../../lib/trpc';
-import { ActivitiesStep } from './components/ActivitiesStep';
+import { ServiceStep } from './components/ServiceStep';
 import { CreatedModal } from './components/CreatedModal';
 import { HeaderStep } from './components/HeaderStep';
 import { Container } from './styles';
+import { ServiceOrderFormData } from 'server/src/types';
+import { serviceOrderSchema } from './utils/serviceOrderSchema';
+import { Loader } from '../../components/Loader';
 
 export interface Material {
   id: string;
   name: string;
-  quantity: string;
+  quantity: number | null | undefined;
   unit: string;
 }
 
-export interface Activity {
+export interface Service {
   id: string;
-  activityId: string;
+  serviceId: string;
   name: string;
   startTime: string;
   endTime: string;
   endDate: string;
-  performer: string | null;
+  executorId: string | null;
   materials: Material[];
 }
 
 export interface FormData {
   startDate: string;
   startTime: string;
-  plate: string | null;
-  driver: string | null;
-  kilometers: string;
+  truckId: string | null;
+  driverId: string | null;
+  odometer: number | null | undefined;
   observation: string;
-  activities: Activity[];
+  services: Service[];
 }
 
 export function NewServiceOrder() {
+  const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [concludedModalIsVisible, setConcludedIsVisible] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     startDate: moment().format('DDMMYYYY'),
     startTime: moment().format('HHmm'),
-    plate: null,
-    driver: null,
-    kilometers: '',
+    odometer: null,
+    driverId: null,
+    truckId: null,
     observation: '',
-    activities: []
+    services: [],
   });
   const FormTitles = ['NOVA ORDEM DE SERVIÇO', 'INSIRA AS ATIVIDADES'];
   const { data: trucks } = trpc.truck.list.useQuery();
@@ -57,6 +61,7 @@ export function NewServiceOrder() {
   const { data: mechanics } = trpc.person.list.useQuery('MECHANIC');
   const { data: services } = trpc.service.list.useQuery();
   const { data: materials } = trpc.product.list.useQuery();
+  const serviceOrderMutation = trpc.serviceOrder.create.useMutation();
 
   const truckOptions: Option[] = useMemo<Option[]>(() => !trucks
     ? []
@@ -97,13 +102,45 @@ export function NewServiceOrder() {
 
   const handleDataChange = useCallback((
     name: keyof FormData,
-    data: string | number | Activity[],
+    data: string | number | null | undefined | Service[],
   ) => {
     setFormData((prevData) => ({ ...prevData, [name]: data }));
   }, []);
 
-  function handleSubmitForm() {
-    console.log('Formulário enviado', formData);
+  async function handleSubmitForm() {
+    setIsLoading(true);
+    const validatedFormData = serviceOrderSchema.safeParse(formData);
+
+    if (!validatedFormData.success) {
+      setIsLoading(false);
+      console.log(validatedFormData.error);
+      return;
+    }
+
+    const { data } = validatedFormData;
+    const parsedFormData: ServiceOrderFormData = {
+      startDate: moment(data.startDate, 'DDMMYYYY').toDate(),
+      startTime: moment(data.startTime, 'HHmm').toDate(),
+      truckId: data.truckId,
+      driverId: data.driverId,
+      odometer: data.odometer,
+      observation: data.observation === '' ? undefined : data.observation,
+      services: data.services.map((service) => ({
+        serviceId: service.serviceId,
+        executorId: service.executorId,
+        startTime: moment(service.startTime, 'HHmm').toDate(),
+        endDate: moment(service.endDate, 'DDMMYYYY').toDate(),
+        endTime: moment(service.endTime, 'HHmm').toDate(),
+        materials: service.materials.map((material) => ({
+          materialId: material.id,
+          quantity: material.quantity
+        })),
+      })),
+    };
+
+    await serviceOrderMutation.mutateAsync(parsedFormData);
+
+    setIsLoading(false);
     setConcludedIsVisible(true);
   }
 
@@ -127,9 +164,9 @@ export function NewServiceOrder() {
         onDataChange={handleDataChange}
       />;
     case 1:
-      return <ActivitiesStep
-        activityOptions={serviceOptions}
-        performerOptions={mechanicOptions}
+      return <ServiceStep
+        serviceOptions={serviceOptions}
+        executorOptions={mechanicOptions}
         materialOptions={materialOptions}
         materialUnits={materialUnits}
         data={formData}
@@ -140,6 +177,14 @@ export function NewServiceOrder() {
 
   return (
     <Container>
+      <Loader isLoading={
+        !trucks ||
+        !drivers ||
+        !mechanics ||
+        !services ||
+        !materials ||
+        isLoading
+      } />
       <CreatedModal isVisible={concludedModalIsVisible} />
       <header>
         {currentStep === 0 && (

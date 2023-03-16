@@ -1,6 +1,6 @@
-import { Activity, FormData } from '../..';
+import { FormData, Service } from '../..';
 import { DateInput } from '../../../../components/DateInput';
-import { Input } from '../../../../components/Input';
+import { InputNumber } from '../../../../components/InputNumber';
 import { Option, Select } from '../../../../components/Select';
 import { TextArea } from '../../../../components/TextArea';
 import { TimeInput } from '../../../../components/TimeInput';
@@ -10,7 +10,8 @@ interface HeaderStepProps {
   driverOptions: Option[];
   data: FormData;
   onDataChange: (
-    name: keyof FormData, data: string | number | Activity[]
+    name: keyof FormData,
+    data: string | number | null | undefined | Service[]
   ) => void;
 }
 
@@ -40,24 +41,21 @@ export function HeaderStep({
         label="Placa"
         placeholder="Selecione uma placa"
         options={plateOptions}
-        selected={data.plate}
-        onSelect={(value) => onDataChange('plate', value)}
+        selected={data.truckId}
+        onSelect={(value) => onDataChange('truckId', value)}
       />
       <Select
         label="Motorista"
         placeholder="Selecione um motorista"
         options={driverOptions}
-        selected={data.driver}
-        onSelect={(value) => onDataChange('driver', value)}
+        selected={data.driverId}
+        onSelect={(value) => onDataChange('driverId', value)}
       />
-      <Input
+      <InputNumber
         label="Kilmetros"
         placeholder="Insira a kilometragem atual"
-        type="number"
-        value={data.kilometers}
-        min={0}
-        step=".01"
-        onChange={(e) => onDataChange('kilometers', e.target.value)}
+        value={data.odometer}
+        onChange={(value) => onDataChange('odometer', value)}
       />
       <TextArea
         label="Observação"

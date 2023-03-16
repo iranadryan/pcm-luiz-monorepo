@@ -1,8 +1,8 @@
 import { Plus, X } from 'phosphor-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Material } from '../..';
 import { Button } from '../../../../components/Button';
-import { Input } from '../../../../components/Input';
+import { InputNumber } from '../../../../components/InputNumber';
 import { Modal } from '../../../../components/Modal';
 import { Option, Select } from '../../../../components/Select';
 import { Container } from './styles';
@@ -10,51 +10,52 @@ import { Container } from './styles';
 interface AddMaterialModalProps {
   isVisible: boolean;
   closeModal: () => void;
-  activityId: string | null;
+  serviceId: string | null;
   materialOptions: Option[];
   materialUnits: {
     id: string;
     unit: string;
   }[];
-  onAddMaterial: (activityId: string, material: Material) => void;
+  onAddMaterial: (serviceId: string, material: Material) => void;
 }
 
 export function AddMaterialModal({
   materialOptions,
   materialUnits,
   isVisible,
-  activityId,
+  serviceId,
   closeModal,
   onAddMaterial
 }: AddMaterialModalProps) {
   const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState('');
+  const [quantity, setQuantity] = useState<number | null | undefined>(null);
   const selectedMaterialUnit = useMemo(() => materialUnits.find(
     ({ id }) => id === selectedMaterial
   )?.unit || null, [materialUnits, selectedMaterial]);
 
-  useEffect(() => {
-    setSelectedMaterial(null);
-    setQuantity('');
-  }, []);
-
   function handleAddMaterial() {
     if (
-      !activityId ||
+      !serviceId ||
       !selectedMaterial ||
       !selectedMaterialUnit ||
-      quantity === ''
+      quantity === null ||
+      quantity === undefined ||
+      quantity === 0
     ) {
       return;
     }
 
-    onAddMaterial(activityId, {
+    onAddMaterial(serviceId, {
       id: selectedMaterial,
-      name: materialOptions.find(({ value }) => value === selectedMaterial)?.label || '',
+      name: materialOptions.find(
+        ({ value }) => value === selectedMaterial
+      )?.label || '',
       unit: selectedMaterialUnit,
       quantity,
     });
 
+    setSelectedMaterial(null);
+    setQuantity(null);
     closeModal();
   }
 
@@ -70,17 +71,18 @@ export function AddMaterialModal({
           options={materialOptions}
           selected={selectedMaterial}
           onSelect={setSelectedMaterial}
+          isModal
         />
         <div className="qty-input">
-          <Input
+          <InputNumber
             label="Quantidade"
             placeholder="Insira a quantidade utilizada"
-            type="number"
             value={quantity}
-            min={0}
-            onChange={(e) => setQuantity(e.target.value)}
+            onChange={setQuantity}
           />
-          {selectedMaterialUnit && <span>{selectedMaterialUnit}</span>}
+          {selectedMaterialUnit && (
+            <span className="unit">{selectedMaterialUnit}</span>
+          )}
         </div>
         <Button onClick={handleAddMaterial} style={{ marginTop: 24 }}>
           <Plus size={16} color="#FFFFFF" weight="bold" />
