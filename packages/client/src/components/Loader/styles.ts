@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Overlay = styled.div`
-  background: rgba(251, 251, 251, 0.6);
+  background: rgba(251, 251, 251, 0.7);
   backdrop-filter: blur(2px);
   display: flex;
   justify-content: center;

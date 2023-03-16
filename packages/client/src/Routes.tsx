@@ -9,7 +9,7 @@ export function Routes() {
     <RouterDomRoutes>
       <Route index element={<ListServiceOrders />} />
       <Route path="new" element={<NewServiceOrder />} />
-      <Route path="view" element={<ViewServiceOrder />} />
+      <Route path="view/:id" element={<ViewServiceOrder />} />
     </RouterDomRoutes>
   );
 }

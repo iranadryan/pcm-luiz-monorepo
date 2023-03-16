@@ -4,12 +4,14 @@ import { ServiceOrder } from 'server/src/types';
 import { ArrowRight, Gear, NotePencil } from 'phosphor-react';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
+import { takeTwoNames } from '../../../../utils/takeTwoNames';
 
 interface ServiceOrderCardProps {
   serviceOrder: ServiceOrder;
 }
 
 export function ServiceOrderCard({ serviceOrder: {
+  id,
   number,
   truck,
   driver,
@@ -36,7 +38,7 @@ export function ServiceOrderCard({ serviceOrder: {
         </div>
         <div>
           <strong>Motorista</strong>
-          <span>{driver.name}</span>
+          <span>{takeTwoNames(driver.name)}</span>
         </div>
       </div>
       <div className="dates">
@@ -49,14 +51,14 @@ export function ServiceOrderCard({ serviceOrder: {
         )}
       </div>
       <footer>
-        {!number && (
+        {/* {!number && (
           <Button secondary>
             Editar
             <NotePencil color="#FFFFFF" size={18} weight="bold" />
           </Button>
-        )}
+        )} */}
         <Button onClick={() => {
-          navigate('view');
+          navigate(`view/${id}`);
         }} secondary>
           Visualizar
           <ArrowRight color="#FFFFFF" size={18} weight="bold" />

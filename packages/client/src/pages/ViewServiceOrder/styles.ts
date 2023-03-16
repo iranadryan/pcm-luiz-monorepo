@@ -35,17 +35,24 @@ export const Container = styled.div`
         grid-column-end: span 2;
       }
 
-      strong {
-        font-weight: 600;
-        font-size: 12px;
-        color: #48AF7A;
+      div {
+        > strong {
+          font-weight: 600;
+          font-size: 12px;
+          color: #48AF7A;
+        }
+
+        span {
+          font-weight: 500;
+          font-size: 16px;
+          display: block;
+
+          strong {
+            margin-left: 8px;
+          }
+        }
       }
 
-      span {
-        font-weight: 500;
-        font-size: 16px;
-        display: block;
-      }
     }
 
     h3 {
