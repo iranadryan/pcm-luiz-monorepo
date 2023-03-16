@@ -51,12 +51,12 @@ export function ServiceOrderCard({ serviceOrder: {
         )}
       </div>
       <footer>
-        {/* {!number && (
+        {!number && (
           <Button secondary>
             Editar
             <NotePencil color="#FFFFFF" size={18} weight="bold" />
           </Button>
-        )} */}
+        )}
         <Button onClick={() => {
           navigate(`view/${id}`);
         }} secondary>

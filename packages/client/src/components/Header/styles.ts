@@ -7,6 +7,6 @@ export const Container = styled.header`
   align-items: center;
 
   img {
-    height: 28px;
+    height: 44px;
   }
 `;
