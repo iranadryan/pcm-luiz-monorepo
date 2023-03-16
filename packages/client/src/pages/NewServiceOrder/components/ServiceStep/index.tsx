@@ -159,6 +159,8 @@ export function ServiceStep({
           options={serviceOptions}
           selected={selectedService}
           onSelect={setSelectedService}
+          filter
+          emptyMessage="Nenhum serviço encontrado"
         />
         <button onClick={handleAddService}>
           <Plus color="#FFFFFF" size={20} weight="bold" />

@@ -43,6 +43,8 @@ export function HeaderStep({
         options={plateOptions}
         selected={data.truckId}
         onSelect={(value) => onDataChange('truckId', value)}
+        filter
+        emptyMessage="Nenhuma placa encontrada"
       />
       <Select
         label="Motorista"
@@ -50,6 +52,8 @@ export function HeaderStep({
         options={driverOptions}
         selected={data.driverId}
         onSelect={(value) => onDataChange('driverId', value)}
+        filter
+        emptyMessage="Nenhum motorista encontrado"
       />
       <InputNumber
         label="Kilmetros"

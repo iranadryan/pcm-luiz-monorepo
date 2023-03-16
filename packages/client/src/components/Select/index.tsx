@@ -12,6 +12,8 @@ interface SelectProps {
   selected: string | null;
   onSelect: (value: string) => void;
   isModal?: boolean;
+  filter?: boolean;
+  emptyMessage?: string;
 }
 
 export function Select({
@@ -21,6 +23,8 @@ export function Select({
   selected,
   onSelect,
   isModal = false,
+  filter = false,
+  emptyMessage = 'Nenhuma opção encontrada'
 }: SelectProps) {
   return (
     <Wrapper>
@@ -31,6 +35,8 @@ export function Select({
         value={selected}
         onChange={(e) => onSelect(e.value)}
         panelClassName={isModal ? 'modal' : ''}
+        filter={filter}
+        emptyFilterMessage={emptyMessage}
       />
     </Wrapper>
   );

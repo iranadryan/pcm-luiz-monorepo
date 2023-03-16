@@ -44,6 +44,7 @@ export const StyledSelect = styled(Dropdown)`
 
     .p-dropdown-trigger-icon {
       color: #005125 !important;
+      font-weight: 700;
     }
   }
 `;

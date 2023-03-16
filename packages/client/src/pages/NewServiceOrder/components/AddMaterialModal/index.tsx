@@ -72,6 +72,8 @@ export function AddMaterialModal({
           selected={selectedMaterial}
           onSelect={setSelectedMaterial}
           isModal
+          filter
+          emptyMessage="Nenhum material encontrado"
         />
         <div className="qty-input">
           <InputNumber
