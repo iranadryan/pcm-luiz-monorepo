@@ -61,7 +61,7 @@ model ServiceOrder {
   number              Int?
   truck               Truck                 @relation(fields: [truckId], references: [id])
   truckId             String
-  odometer            Int
+  odometer            Float
   driver              Person                @relation(fields: [driverId], references: [id])
   driverId            String
   startDate           DateTime              @db.Date
