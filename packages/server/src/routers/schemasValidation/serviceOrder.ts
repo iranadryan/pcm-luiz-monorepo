@@ -19,12 +19,12 @@ export const listOutputSchemaValidation = z.array(
 );
 
 export const createInputSchemaValidation = z.object({
-  startDate: z.string({
+  startDate: z.date({
     required_error: 'Start date is required',
     invalid_type_error: 'Start date must be a date'
   }),
 
-  startTime: z.string({
+  startTime: z.date({
     required_error: 'Start time is required',
     invalid_type_error: 'Start time must be a date'
   }),
@@ -67,17 +67,17 @@ export const createInputSchemaValidation = z.object({
       message: 'Executor ID must be a uuid'
     }),
 
-    startTime: z.string({
+    startTime: z.date({
       required_error: 'Start time is required',
       invalid_type_error: 'Start time must be a date'
     }),
 
-    endDate: z.string({
+    endDate: z.date({
       required_error: 'End date is required',
       invalid_type_error: 'End date must be a date'
     }),
 
-    endTime: z.string({
+    endTime: z.date({
       required_error: 'End time is required',
       invalid_type_error: 'End time must be a date'
     }),
@@ -97,13 +97,13 @@ export const createInputSchemaValidation = z.object({
     }, {
       required_error: 'Material body is required',
     }), {
-      required_error: 'Materials is required',
+      required_error: 'Materials are required',
       invalid_type_error: 'Materials must be an array',
     }),
   }, {
     required_error: 'Service body is required'
   }), {
-    required_error: 'Services is required',
+    required_error: 'Services are required',
     invalid_type_error: 'Services must be an array'
   })
 }, {
@@ -123,12 +123,12 @@ export const closeInputSchemaValidation = z.object({
     invalid_type_error: 'Service order number must be a number'
   }),
 
-  endDate: z.string({
+  endDate: z.date({
     required_error: 'End date is required',
     invalid_type_error: 'End date must be a date'
   }),
 
-  endTime: z.string({
+  endTime: z.date({
     required_error: 'End time is required',
     invalid_type_error: 'End time must be a date'
   }),
