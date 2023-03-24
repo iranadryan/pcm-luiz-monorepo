@@ -1,10 +1,11 @@
 import styled from 'styled-components';
+import { HEADER_HEIGHT } from '../../components/Header/styles';
 
 export const Container = styled.div`
   display: grid;
   grid-template-rows: 48px 1fr 52px;
   row-gap: 20px;
-  height: calc(100% - 92px);
+  height: calc(100% - ${HEADER_HEIGHT});
 
   header {
     display: flex;
