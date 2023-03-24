@@ -258,33 +258,55 @@ export const serviceOrderRouter = router({
             });
           }
         } else {
-          const serviceOrderService = await prisma.serviceOrderService.update({
-            where: {
-              id: serviceOrderServiceId
-            },
-            data: serviceOrderServiceInput,
-          });
-
-          for (const material of materials) {
-            const serviceOrderServiceMaterialId = material.id;
-
-            if (!serviceOrderServiceMaterialId) {
-              await prisma.serviceOrderServiceMaterial.create({
-                data: {
-                  ...material,
-                  serviceOrderServiceId: serviceOrderService.id
-                },
-              });
-            } else {
-              await prisma.serviceOrderServiceMaterial.update({
+          if (service.deleted) {
+            await prisma.serviceOrderService.delete({
+              where: {
+                id: serviceOrderServiceId
+              }
+            });
+            await prisma.serviceOrderServiceMaterial.deleteMany({
+              where: {
+                serviceOrderServiceId: serviceOrderServiceId
+              }
+            });
+          } else {
+            const serviceOrderService = await prisma.serviceOrderService
+              .update({
                 where: {
-                  id: serviceOrderServiceMaterialId,
+                  id: serviceOrderServiceId
                 },
-                data: {
-                  ...material,
-                  serviceOrderServiceId: serviceOrderService.id
-                },
+                data: serviceOrderServiceInput,
               });
+
+            for (const material of materials) {
+              const serviceOrderServiceMaterialId = material.id;
+
+              if (!serviceOrderServiceMaterialId) {
+                await prisma.serviceOrderServiceMaterial.create({
+                  data: {
+                    ...material,
+                    serviceOrderServiceId: serviceOrderService.id
+                  },
+                });
+              } else {
+                if (material.deleted) {
+                  await prisma.serviceOrderServiceMaterial.delete({
+                    where: {
+                      id: serviceOrderServiceMaterialId
+                    }
+                  });
+                } else {
+                  await prisma.serviceOrderServiceMaterial.update({
+                    where: {
+                      id: serviceOrderServiceMaterialId,
+                    },
+                    data: {
+                      ...material,
+                      serviceOrderServiceId: serviceOrderService.id
+                    },
+                  });
+                }
+              }
             }
           }
         }

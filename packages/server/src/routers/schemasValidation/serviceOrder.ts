@@ -158,6 +158,10 @@ export const updateInputSchemaValidation = z.object({
       message: 'Service ID must be a uuid'
     }).optional(),
 
+    deleted: z.boolean({
+      invalid_type_error: 'Deleted must be a boolean'
+    }).optional(),
+
     serviceId: z.string({
       required_error: 'Service ID is required',
       invalid_type_error: 'Service ID must be a string'
@@ -192,6 +196,10 @@ export const updateInputSchemaValidation = z.object({
         invalid_type_error: 'Material ID must be a string'
       }).uuid({
         message: 'Material ID must be a uuid'
+      }).optional(),
+
+      deleted: z.boolean({
+        invalid_type_error: 'Deleted must be a boolean'
       }).optional(),
 
       materialId: z.string({
