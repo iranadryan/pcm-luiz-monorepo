@@ -82,6 +82,10 @@ export const createInputSchemaValidation = z.object({
       invalid_type_error: 'End time must be a date'
     }),
 
+    description: z.string({
+      invalid_type_error: 'description must be a string'
+    }).optional(),
+
     materials: z.array(z.object({
       materialId: z.string({
         required_error: 'Material ID is required',
@@ -190,6 +194,10 @@ export const updateInputSchemaValidation = z.object({
       required_error: 'End time is required',
       invalid_type_error: 'End time must be a date'
     }),
+
+    description: z.string({
+      invalid_type_error: 'description must be a string'
+    }).optional(),
 
     materials: z.array(z.object({
       id: z.string({

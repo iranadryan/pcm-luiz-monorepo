@@ -89,6 +89,7 @@ model ServiceOrderService {
   startTime                   DateTime                      @db.Time()
   endDate                     DateTime                      @db.Date
   endTime                     DateTime                      @db.Time()
+  description                 String?
   serviceOrder                ServiceOrder                  @relation(fields: [serviceOrderId], references: [id])
   serviceOrderId              String
   ServiceOrderServiceMaterial ServiceOrderServiceMaterial[]

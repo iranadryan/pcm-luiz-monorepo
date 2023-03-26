@@ -70,6 +70,7 @@ export const serviceOrderRouter = router({
           ServiceOrderService: {
             select: {
               id: true,
+              description: true,
               startTime: true,
               endDate: true,
               endTime: true,
@@ -134,7 +135,8 @@ export const serviceOrderRouter = router({
           startTime: service.startTime,
           endDate: service.endDate,
           endTime: service.endTime,
-          serviceOrderId: serviceOrder.id
+          description: service.description,
+          serviceOrderId: serviceOrder.id,
         };
         const serviceOrderService = await prisma.serviceOrderService.create({
           data: serviceOrderServiceInput,
@@ -178,6 +180,7 @@ export const serviceOrderRouter = router({
               startTime: true,
               endDate: true,
               endTime: true,
+              description: true,
               service: {
                 select: {
                   id: true,
@@ -246,6 +249,7 @@ export const serviceOrderRouter = router({
           startTime: service.startTime,
           endDate: service.endDate,
           endTime: service.endTime,
+          description: service.description,
           serviceOrderId: serviceOrder.id
         };
 
@@ -351,8 +355,12 @@ export const serviceOrderRouter = router({
   export: publicProcedure
     .input(z.string())
     .mutation(async ({ input }) => {
-      if (fs.existsSync(path.resolve(__dirname, '..', '..', 'reports', `${input}.pdf`))) {
-        return `http://localhost:3001/reports/${input}.pdf`;
+      const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
+      const reportUrl = `${baseUrl}/reports/${input}.pdf`;
+      const reportPath = path.resolve(__dirname, '..', '..', 'reports', `${input}.pdf`);
+
+      if (fs.existsSync(reportPath)) {
+        return reportUrl;
       }
 
       const serviceOrder = await prisma.serviceOrder.findUnique({
@@ -477,8 +485,8 @@ export const serviceOrderRouter = router({
         responseType: 'arraybuffer'
       });
 
-      fs.writeFileSync(path.resolve(__dirname, '..', '..', 'reports', `${input}.pdf`), data, 'binary');
+      fs.writeFileSync(reportPath, data, 'binary');
 
-      return `http://localhost:3001/reports/${input}.pdf`;
+      return reportUrl;
     })
 });
