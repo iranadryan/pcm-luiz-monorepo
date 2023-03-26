@@ -42,17 +42,19 @@ export function ServiceOrderCard({ serviceOrder: {
         </div>
       </div>
       <div className="dates">
-        <span>{moment(startDate).format('DD/MM/YYYY')}</span>
+        <span>{moment(startDate).add(3, 'h').format('DD/MM/YYYY')}</span>
         {endDate && (
           <>
             <ArrowRight color="#F37324" size={18} weight="bold" />
-            <span>{moment(endDate).format('DD/MM/YYYY')}</span>
+            <span>{moment(endDate).add(3, 'h').format('DD/MM/YYYY')}</span>
           </>
         )}
       </div>
       <footer>
         {!number && (
-          <Button secondary>
+          <Button onClick={() => {
+            navigate(`edit/${id}`);
+          }} secondary>
             Editar
             <NotePencil color="#FFFFFF" size={18} weight="bold" />
           </Button>

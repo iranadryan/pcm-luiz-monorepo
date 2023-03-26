@@ -22,6 +22,23 @@ export function ViewServiceOrder() {
   }
 
   const { data: serviceOrder, refetch } = trpc.serviceOrder.get.useQuery(id);
+  const serviceOrderMutation = trpc.serviceOrder.export.useMutation();
+
+  async function exportServiceOrder() {
+    setIsLoading(true);
+    if (!id) {
+      return;
+    }
+
+    const data = await serviceOrderMutation.mutateAsync(id);
+
+    const link = document.createElement('a');
+    link.href = data;
+    link.target = '_blank';
+    link.download = `ORDEM DE SERVIÇO #${serviceOrder?.number}.pdf`;
+    link.click();
+    setIsLoading(false);
+  }
 
   return (
     <Container>
@@ -50,7 +67,7 @@ export function ViewServiceOrder() {
           <div>
             <strong>Início</strong>
             <span>
-              {`${moment(serviceOrder?.startDate).format('DD/MM/YYYY')} - ${moment(serviceOrder?.startTime).format('HH:mm')}`}
+              {`${moment(serviceOrder?.startDate).add(3, 'h').format('DD/MM/YYYY')} - ${moment(serviceOrder?.startTime).format('HH:mm')}`}
             </span>
           </div>
           <div>
@@ -113,7 +130,7 @@ export function ViewServiceOrder() {
         )}
       </main>
       {serviceOrder?.status === 'CLOSED' ? (
-        <Button onClick={() => { return; }}>
+        <Button onClick={exportServiceOrder}>
           Exportar
           <Export size={20} color="#FFFFFF" weight="bold" />
         </Button>
