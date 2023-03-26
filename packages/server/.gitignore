@@ -27,3 +27,4 @@ benchmarks/graphs
 
 dist
 .env
+reports/*

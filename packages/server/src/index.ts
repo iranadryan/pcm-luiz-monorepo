@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'node:path';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { inferAsyncReturnType } from '@trpc/server';
 import { expressHandler } from 'trpc-playground/handlers/express';
@@ -28,6 +29,7 @@ async function main() {
   const port = process.env.PORT || 3001;
 
   app.use(cors());
+  app.use('/reports', express.static(path.resolve(__dirname, '..', 'reports')));
   app.use(
     '/trpc',
     trpcExpress.createExpressMiddleware({
