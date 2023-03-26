@@ -29,6 +29,7 @@ export interface Service {
   endTime: string;
   endDate: string;
   executorId: string | null;
+  description: string;
   materials: Material[];
 }
 
@@ -131,6 +132,7 @@ export function NewServiceOrder() {
         startTime: moment(service.startTime, 'HHmm').toDate(),
         endDate: moment(service.endDate, 'DDMMYYYY').toDate(),
         endTime: moment(service.endTime, 'HHmm').toDate(),
+        description: service.description === '' ? undefined : service.description,
         materials: service.materials.map((material) => ({
           materialId: material.id,
           quantity: material.quantity

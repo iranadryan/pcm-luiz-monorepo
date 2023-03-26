@@ -19,8 +19,8 @@ export function App() {
     transformer: SuperJSON,
     links: [
       httpBatchLink({
-        // url: 'https://pcm-luiz-api.onrender.com/trpc'
-        url: 'http://localhost:3001/trpc'
+        url: 'https://pcm-luiz-api.onrender.com/trpc'
+        // url: 'http://localhost:3001/trpc'
       })
     ]
   }));

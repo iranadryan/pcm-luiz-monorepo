@@ -5,13 +5,15 @@ interface TextAreaProps {
   placeholder?: string;
   value: string;
   onChange: (value: string) => void;
+  rows?: number;
 }
 
 export function TextArea({
   label,
   placeholder,
   value,
-  onChange
+  onChange,
+  rows = 4,
 }: TextAreaProps) {
   return (
     <Wrapper>
@@ -20,7 +22,7 @@ export function TextArea({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        rows={4}
+        rows={rows}
       />
     </Wrapper>
   );

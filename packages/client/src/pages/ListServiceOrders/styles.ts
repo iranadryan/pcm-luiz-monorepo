@@ -19,6 +19,20 @@ export const Container = styled.div`
     height: 100%;
     overflow-y: auto;
     align-content: start;
+
+    &::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    &::-webkit-scrollbar-track {
+      border-radius: 999px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #48AF7A;
+      border-radius: 999px;
+      border: 4px solid #FBFBFB;
+    }
   }
 
   .new-order {

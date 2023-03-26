@@ -26,6 +26,19 @@ export const Container = styled.div`
 
   .form {
     overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    &::-webkit-scrollbar-track {
+      border-radius: 999px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #48AF7A;
+      border-radius: 999px;
+      border: 4px solid #FBFBFB;
+    }
 
     .date-input {
       display: flex;

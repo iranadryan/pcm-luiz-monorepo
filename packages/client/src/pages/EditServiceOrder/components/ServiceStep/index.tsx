@@ -8,6 +8,7 @@ import { TimeInput } from '../../../../components/TimeInput';
 import { NoData } from '../../../../components/NoData';
 import { ActivitiesList, ActivityInput } from './styles';
 import { AddMaterialModal } from '../AddMaterialModal';
+import { TextArea } from '../../../../components/TextArea';
 
 interface ServiceStepProps {
   serviceOptions: Option[];
@@ -58,6 +59,7 @@ export function ServiceStep({
       endTime: data.startTime,
       endDate: data.startDate,
       executorId: '',
+      description: '',
       materials: []
     });
 
@@ -252,6 +254,17 @@ export function ServiceStep({
                   handleChangeServiceData(service.id, 'executorId', value);
                 }}
               />
+              <div className="stretch">
+                <TextArea
+                  label="Descrição"
+                  placeholder="Descrição da atividade"
+                  rows={2}
+                  value={service.description}
+                  onChange={(value) => {
+                    handleChangeServiceData(service.id, 'description', value);
+                  }}
+                />
+              </div>
               {service.materials.length > 0 && (
                 <div className="stretch material-list">
                   {service.materials.map((material) => material.deleted

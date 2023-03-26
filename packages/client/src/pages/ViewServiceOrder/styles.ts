@@ -27,6 +27,21 @@ export const Container = styled.div`
   main {
     overflow: auto;
 
+    &::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    &::-webkit-scrollbar-track {
+      border-radius: 999px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #48AF7A;
+      border-radius: 999px;
+      border: 4px solid #FBFBFB;
+    }
+
+
     .info {
       display: grid;
       grid-template-columns: repeat(2, 1fr);

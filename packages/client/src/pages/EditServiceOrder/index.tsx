@@ -34,6 +34,7 @@ export interface Service {
   endTime: string;
   endDate: string;
   executorId: string | null;
+  description: string;
   materials: Material[];
 }
 
@@ -140,6 +141,7 @@ export function EditServiceOrder() {
           endDate: moment(service.endDate).add(3, 'h').format('DDMMYYYY'),
           endTime: moment(service.endTime).format('HHmm'),
           executorId: service.executor.id,
+          description: service.description || '',
           materials: service.ServiceOrderServiceMaterial.map((material) => ({
             id: material.id,
             materialId: material.material.id,
@@ -181,6 +183,7 @@ export function EditServiceOrder() {
         startTime: moment(service.startTime, 'HHmm').toDate(),
         endDate: moment(service.endDate, 'DDMMYYYY').toDate(),
         endTime: moment(service.endTime, 'HHmm').toDate(),
+        description: service.description === '' ? undefined : service.description,
         materials: service.materials.map((material) => ({
           id: material.alreadyExists ? material.id : undefined,
           deleted: material.deleted,

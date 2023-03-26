@@ -20,6 +20,7 @@ const serviceSchema = z.object({
   endTime: z.string().nonempty(),
   endDate: z.string(),
   executorId: z.string().uuid(),
+  description: z.string(),
   materials: z.array(materialSchema),
 });
 

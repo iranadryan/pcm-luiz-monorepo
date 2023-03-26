@@ -70,6 +70,14 @@ export function ViewServiceOrder() {
               {`${moment(serviceOrder?.startDate).add(3, 'h').format('DD/MM/YYYY')} - ${moment(serviceOrder?.startTime).format('HH:mm')}`}
             </span>
           </div>
+          {serviceOrder?.status === 'CLOSED' && (
+            <div>
+              <strong>Final</strong>
+              <span>
+                {`${moment(serviceOrder?.endDate).add(3, 'h').format('DD/MM/YYYY')} - ${moment(serviceOrder?.endTime).format('HH:mm')}`}
+              </span>
+            </div>
+          )}
           <div>
             <strong>Motorista</strong>
             <span>{takeTwoNames(serviceOrder?.driver.name || '')}</span>
@@ -110,6 +118,12 @@ export function ViewServiceOrder() {
                     <strong>Executante</strong>
                     <span>{service.executor.name}</span>
                   </div>
+                  {service.description && (
+                    <div className="stretch">
+                      <strong>Descrição</strong>
+                      <span>{service.description}</span>
+                    </div>
+                  )}
                   {service.ServiceOrderServiceMaterial.length > 0 && (
                     <div className="stretch">
                       <strong>Materiais</strong>
