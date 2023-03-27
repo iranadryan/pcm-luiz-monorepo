@@ -12,6 +12,7 @@ interface ServiceOrderCardProps {
 
 export function ServiceOrderCard({ serviceOrder: {
   id,
+  status,
   number,
   truck,
   driver,
@@ -27,8 +28,8 @@ export function ServiceOrderCard({ serviceOrder: {
           <Gear color="#007F4E" size={32} weight="duotone" />
         </div>
         <strong>{number ? `#${number}` : 'ORDEM'}</strong>
-        <small className={`${number ? '' : 'open'}`}>
-          {number ? 'FECHADA' : 'ABERTA'}
+        <small className={`${status === 'CLOSED' ? '' : 'open'}`}>
+          {status === 'CLOSED' ? 'FECHADA' : 'ABERTA'}
         </small>
       </header>
       <div className="info">

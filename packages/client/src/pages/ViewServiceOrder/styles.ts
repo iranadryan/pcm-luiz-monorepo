@@ -96,4 +96,9 @@ export const Container = styled.div`
       }
     }
   }
+
+  footer {
+    display: flex;
+    gap: 8px;
+  }
 `;

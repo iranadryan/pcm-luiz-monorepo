@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { ArrowLeft, Check, Export } from 'phosphor-react';
+import { ArrowLeft, Check, Export, Hash } from 'phosphor-react';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button } from '../../components/Button';
@@ -8,12 +8,15 @@ import { Title } from '../../components/Title';
 import { trpc } from '../../lib/trpc';
 import { formatNumber } from '../../utils/formatNumber';
 import { takeTwoNames } from '../../utils/takeTwoNames';
+import { ChangeNumberModal } from './components/ChangeNumberModal';
 import { CloseOrderModal } from './components/CloseOrderModal';
 import { Container } from './styles';
 
 export function ViewServiceOrder() {
   const [isLoading, setIsLoading] = useState(false);
   const [closeOrderModalIsVisible, setCloseOrderModalIsVisible] =
+    useState(false);
+  const [changeNumberModalIsVisible, setChangeNumberModalIsVisible] =
     useState(false);
   const { id } = useParams();
 
@@ -54,12 +57,24 @@ export function ViewServiceOrder() {
         serviceOrderId={id}
         onIsLoading={setIsLoading}
       />
+      <ChangeNumberModal
+        isVisible={changeNumberModalIsVisible}
+        closeModal={(closed: boolean) => {
+          setChangeNumberModalIsVisible(false);
+          if (closed) {
+            refetch();
+          }
+        }}
+        serviceOrderId={id}
+        number={serviceOrder?.number || null}
+        onIsLoading={setIsLoading}
+      />
       <header>
         <Link to="/" className="back-button">
           <ArrowLeft color="#FFFFFF" size={24} weight="bold" />
         </Link>
         <Title
-          title={serviceOrder?.status === 'CLOSED' ? `ORDEM #${serviceOrder?.number}` : 'ORDER ABERTA'}
+          title={serviceOrder?.number ? `ORDEM #${serviceOrder?.number}` : 'ORDEM SEM NÚMERO'}
         />
       </header>
       <main>
@@ -143,17 +158,23 @@ export function ViewServiceOrder() {
           </div>
         )}
       </main>
-      {serviceOrder?.status === 'CLOSED' ? (
-        <Button onClick={exportServiceOrder}>
-          Exportar
-          <Export size={20} color="#FFFFFF" weight="bold" />
+      <footer>
+        {serviceOrder?.status === 'CLOSED' ? (
+          <Button onClick={exportServiceOrder}>
+            <Export size={20} color="#FFFFFF" weight="bold" />
+            Exportar
+          </Button>
+        ) : (
+          <Button onClick={() => setCloseOrderModalIsVisible(true)}>
+            <Check size={20} color="#FFFFFF" weight="bold" />
+            Fechar
+          </Button>
+        )}
+        <Button onClick={() => setChangeNumberModalIsVisible(true)}>
+          <Hash size={20} color="#FFFFFF" weight="bold" />
+          {serviceOrder?.number ? 'Alterar Número' : 'Inserir Número'}
         </Button>
-      ) : (
-        <Button onClick={() => setCloseOrderModalIsVisible(true)}>
-          Fechar
-          <Check size={20} color="#FFFFFF" weight="bold" />
-        </Button>
-      )}
+      </footer>
     </Container>
   );
 }
