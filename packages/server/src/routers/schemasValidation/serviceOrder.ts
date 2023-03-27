@@ -245,11 +245,6 @@ export const closeInputSchemaValidation = z.object({
     message: 'Service order ID must be a uuid',
   }),
 
-  number: z.number({
-    required_error: 'Service order number is required',
-    invalid_type_error: 'Service order number must be a number'
-  }),
-
   endDate: z.date({
     required_error: 'End date is required',
     invalid_type_error: 'End date must be a date'
@@ -258,5 +253,19 @@ export const closeInputSchemaValidation = z.object({
   endTime: z.date({
     required_error: 'End time is required',
     invalid_type_error: 'End time must be a date'
+  }),
+});
+
+export const changeNumberInputSchemaValidation = z.object({
+  id: z.string({
+    required_error: 'Service order ID is required',
+    invalid_type_error: 'Service order ID must be a string',
+  }).uuid({
+    message: 'Service order ID must be a uuid',
+  }),
+
+  number: z.number({
+    required_error: 'Service order number is required',
+    invalid_type_error: 'Service order number must be a number'
   }),
 });

@@ -6,6 +6,7 @@ import { publicProcedure, router } from '../lib/trpc';
 import { prisma } from '../lib/prisma';
 import { z } from 'zod';
 import {
+  changeNumberInputSchemaValidation,
   closeInputSchemaValidation,
   createInputSchemaValidation,
   listOutputSchemaValidation,
@@ -343,10 +344,33 @@ export const serviceOrderRouter = router({
           id: input.id
         },
         data: {
-          number: input.number,
           endDate: input.endDate,
           endTime: input.endTime,
           status: 'CLOSED'
+        }
+      });
+
+      return serviceOrder;
+    }),
+  changeNumber: publicProcedure
+    .input(changeNumberInputSchemaValidation)
+    .mutation(async ({ input }) => {
+      const serviceOrderExists = await prisma.serviceOrder.findUnique({
+        where: {
+          id: input.id
+        }
+      });
+
+      if (!serviceOrderExists) {
+        throw new Error(`Service order does not exists: ${input.id}`);
+      }
+
+      const serviceOrder = await prisma.serviceOrder.update({
+        where: {
+          id: input.id
+        },
+        data: {
+          number: input.number
         }
       });
 

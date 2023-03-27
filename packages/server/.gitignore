@@ -27,4 +27,4 @@ benchmarks/graphs
 
 dist
 .env
-reports/*
+reports/*.pdf
