@@ -383,10 +383,6 @@ export const serviceOrderRouter = router({
       const reportUrl = `${baseUrl}/reports/${input}.pdf`;
       const reportPath = path.resolve(__dirname, '..', '..', 'reports', `${input}.pdf`);
 
-      if (fs.existsSync(reportPath)) {
-        return reportUrl;
-      }
-
       const serviceOrder = await prisma.serviceOrder.findUnique({
         select: {
           id: true,
