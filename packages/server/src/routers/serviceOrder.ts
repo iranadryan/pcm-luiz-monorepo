@@ -497,6 +497,7 @@ export const serviceOrderRouter = router({
           endDate: moment(serviceOrder.endDate).add(3, 'h').format('DD/MM/YYYY'),
           startTime: moment(serviceOrder.startTime).format('HH:mm'),
           endTime: moment(serviceOrder.endTime).format('HH:mm'),
+          observation: serviceOrder.observation,
           materials,
           activities: services
         }
