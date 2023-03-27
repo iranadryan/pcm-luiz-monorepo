@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { Plus, Trash } from 'phosphor-react';
 import { useState } from 'react';
 import { FormData, Material, Service } from '../..';
@@ -48,7 +49,7 @@ export function ServiceStep({
     }
 
     services.push({
-      id: self.crypto.randomUUID(),
+      id: uuidv4(),
       alreadyExists: false,
       deleted: false,
       serviceId: selectedService,

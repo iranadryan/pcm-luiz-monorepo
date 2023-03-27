@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { Plus, X } from 'phosphor-react';
 import { useMemo, useState } from 'react';
 import { Material } from '../..';
@@ -46,7 +47,7 @@ export function AddMaterialModal({
     }
 
     onAddMaterial(serviceId, {
-      id: self.crypto.randomUUID(),
+      id: uuidv4(),
       materialId: selectedMaterial,
       deleted: false,
       alreadyExists: false,
