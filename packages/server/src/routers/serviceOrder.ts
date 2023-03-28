@@ -465,9 +465,9 @@ export const serviceOrderRouter = router({
           index: index + 1,
           name: service.service.name,
           performer: service.executor.name,
-          startTime: moment(service.startTime).format('HH:mm'),
-          endTime: moment(service.endTime).format('HH:mm'),
-          endDate: moment(service.endDate).add(3, 'h').format('DD/MM/YYYY'),
+          startTime: moment(service.startTime).subtract(3, 'h').format('HH:mm'),
+          endTime: moment(service.endTime).subtract(3, 'h').format('HH:mm'),
+          endDate: moment(service.endDate).format('DD/MM/YYYY'),
         });
 
         service.ServiceOrderServiceMaterial.forEach((material) => {
@@ -489,10 +489,10 @@ export const serviceOrderRouter = router({
           plate: serviceOrder.truck.plate,
           acumulatedKm: formatNumber(serviceOrder.odometer, ' KM'),
           driver: serviceOrder.driver.name,
-          startDate: moment(serviceOrder.startDate).add(3, 'h').format('DD/MM/YYYY'),
-          endDate: moment(serviceOrder.endDate).add(3, 'h').format('DD/MM/YYYY'),
-          startTime: moment(serviceOrder.startTime).format('HH:mm'),
-          endTime: moment(serviceOrder.endTime).format('HH:mm'),
+          startDate: moment(serviceOrder.startDate).format('DD/MM/YYYY'),
+          endDate: moment(serviceOrder.endDate).format('DD/MM/YYYY'),
+          startTime: moment(serviceOrder.startTime).subtract(3, 'h').format('HH:mm'),
+          endTime: moment(serviceOrder.endTime).subtract(3, 'h').format('HH:mm'),
           observation: serviceOrder.observation,
           materials,
           activities: services
