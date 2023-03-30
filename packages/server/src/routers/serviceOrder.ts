@@ -272,11 +272,6 @@ export const serviceOrderRouter = router({
           }
         } else {
           if (service.deleted) {
-            await prisma.serviceOrderServiceMaterial.deleteMany({
-              where: {
-                serviceOrderServiceId: serviceOrderServiceId
-              }
-            });
             await prisma.serviceOrderService.delete({
               where: {
                 id: serviceOrderServiceId
