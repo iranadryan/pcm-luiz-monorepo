@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { ArrowLeft, ArrowRight } from 'phosphor-react';
-import { useCallback, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Option } from '../../components/Select';
 import { Title } from '../../components/Title';
@@ -45,20 +45,11 @@ export interface FormData {
   services: Service[];
 }
 
-export function NewServiceOrder() {
+export function DuplicateServiceOrder() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [concludedModalIsVisible, setConcludedIsVisible] = useState(false);
-  const [formData, setFormData] = useState<FormData>({
-    startDate: moment().format('DDMMYYYY'),
-    startTime: moment().format('HHmm'),
-    odometer: null,
-    driverId: null,
-    truckId: null,
-    observation: '',
-    services: [],
-  });
-  const FormTitles = ['NOVA ORDEM DE SERVIÇO', 'INSIRA AS ATIVIDADES'];
+  const FormTitles = ['DUPLICAR ORDEM DE SERVIÇO', 'ALTERAR AS ATIVIDADES'];
   const { data: trucks } = trpc.truck.list.useQuery();
   const { data: drivers } = trpc.person.list.useQuery('DRIVER');
   const { data: mechanics } = trpc.person.list.useQuery('MECHANIC');
@@ -103,6 +94,63 @@ export function NewServiceOrder() {
       id: material.id,
       unit: 'UN'
     })), [materials]);
+
+  const { id } = useParams();
+
+  const {
+    data: serviceOrder
+  } = trpc.serviceOrder.getUpdateFormData.useQuery(id || '');
+  const [formData, setFormData] = useState<FormData>({
+    startDate: '',
+    startTime: '',
+    odometer: null,
+    driverId: null,
+    truckId: null,
+    observation: '',
+    services: [],
+  });
+
+  useEffect(() => {
+    const emptyState = {
+      startDate: '',
+      startTime: '',
+      odometer: null,
+      driverId: null,
+      truckId: null,
+      observation: '',
+      services: [],
+    };
+
+    if (
+      serviceOrder &&
+      JSON.stringify(formData) === JSON.stringify(emptyState)
+    ) {
+      setFormData({
+        startDate: moment().format('DDMMYYYY'),
+        startTime: moment().format('HHmm'),
+        odometer: serviceOrder.odometer,
+        driverId: serviceOrder.driver.id,
+        truckId: serviceOrder.truck.id,
+        observation: serviceOrder.observation || '',
+        services: serviceOrder.ServiceOrderService.map((service) => ({
+          id: service.id,
+          serviceId: service.service.id,
+          name: `${service.service.code} - ${service.service.name}`,
+          startTime: moment().format('HHmm'),
+          endDate: moment().format('DDMMYYYY'),
+          endTime: moment().format('HHmm'),
+          executorId: service.executor.id,
+          description: service.description || '',
+          materials: service.ServiceOrderServiceMaterial.map((material) => ({
+            id: material.id,
+            name: `${material.material.code} - ${material.material.name}`,
+            quantity: material.quantity,
+            unit: 'UN',
+          })),
+        })),
+      });
+    }
+  }, [formData, serviceOrder]);
 
   const handleDataChange = useCallback((
     name: keyof FormData,

@@ -6,6 +6,7 @@ export const Container = styled.section`
   border: 1px solid #BDD8C7;
   border-radius: 4px;
   box-shadow: 0px 4px 6px rgba(0, 60, 35, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.12);
+  position: relative;
 
   header {
     display: flex;
@@ -40,6 +41,15 @@ export const Container = styled.section`
       &.open {
         background: #F37324;
       }
+    }
+
+    .context-button {
+      display: flex;
+      background: transparent;
+      border: none;
+      position: absolute;
+      right: 4px;
+      top: 8px;
     }
   }
 

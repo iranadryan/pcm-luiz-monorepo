@@ -1,3 +1,4 @@
+import useAnimatedUnmount from '../../hooks/useAnimatedUnmount';
 import { ReactPortal } from '../ReactPortal';
 import { Title } from '../Title';
 import { Container, Overlay } from './styles';
@@ -13,14 +14,16 @@ export function Modal({
   children,
   isVisible,
 }: ModalProps) {
-  if (!isVisible) {
+  const { shouldRender, animatedElementRef } = useAnimatedUnmount(isVisible);
+
+  if (!shouldRender) {
     return null;
   }
 
   return (
     <ReactPortal containerId="modal-root">
-      <Overlay>
-        <Container>
+      <Overlay ref={animatedElementRef} isLeaving={!isVisible}>
+        <Container isLeaving={!isVisible}>
           {title && <Title title={title} />}
           {children}
         </Container>

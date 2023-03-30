@@ -53,8 +53,6 @@ export function ServiceStep({
 
     services.push({
       id: uuidv4(),
-      alreadyExists: false,
-      deleted: false,
       serviceId: selectedService,
       name: serviceOptions.find(
         (option) => option.value === selectedService
@@ -62,7 +60,7 @@ export function ServiceStep({
       startTime: data.startTime,
       endTime: data.startTime,
       endDate: data.startDate,
-      executorId: null,
+      executorId: '',
       description: '',
       materials: []
     });
@@ -70,25 +68,9 @@ export function ServiceStep({
     onDataChange('services', services);
   }
 
-  function handleRemoveService(id: string, alreadyExists: boolean) {
+  function handleRemoveService(id: string) {
     let services = [...data.services];
-
-    if (!alreadyExists) {
-      services = services.filter((service) => service.id !== id);
-    } else {
-      const serviceIndex = services.findIndex(
-        (service) => service.id === id
-      );
-
-      if (serviceIndex === -1) {
-        return;
-      }
-
-      services[serviceIndex] = {
-        ...services[serviceIndex],
-        deleted: true,
-      };
-    }
+    services = services.filter((service) => service.id !== id);
 
     onDataChange('services', services);
   }
@@ -144,11 +126,7 @@ export function ServiceStep({
     onDataChange('services', services);
   }
 
-  function handleRemoveMaterial(
-    serviceId: string,
-    materialId: string,
-    alreadyExists: boolean
-  ) {
+  function handleRemoveMaterial(serviceId: string, materialId: string) {
     const services = [...data.services];
     const serviceIndex = services.findIndex(
       (service) => service.id === serviceId
@@ -159,25 +137,9 @@ export function ServiceStep({
     }
 
     let materials = [...data.services[serviceIndex].materials];
-
-    if (!alreadyExists) {
-      materials = materials.filter(
-        (material) => material.id !== materialId
-      );
-    } else {
-      const materialIndex = materials.findIndex(
-        (material) => material.id === materialId
-      );
-
-      if (materialIndex === -1) {
-        return;
-      }
-
-      materials[materialIndex] = {
-        ...materials[materialIndex],
-        deleted: true,
-      };
-    }
+    materials = materials.filter(
+      (material) => material.id !== materialId
+    );
 
     services[serviceIndex] = {
       ...services[serviceIndex],
@@ -212,18 +174,18 @@ export function ServiceStep({
       </div>
       <small className="error-message">{getErrorMessage('services')}</small>
       <ActivitiesList>
-        {data.services.filter((service) => !service.deleted).length === 0 && (
+        {data.services.length === 0 && (
           <NoData
             title="Nenhuma atividade inserida!"
             text="Aqui você insere as atividades da sua ordem"
           />
         )}
-        {data.services.map((service, index) => service.deleted ? null : (
+        {data.services.map((service, index) => (
           <ActivityInput key={service.id}>
             <header>
               <h3>{service.name}</h3>
               <button onClick={
-                () => handleRemoveService(service.id, service.alreadyExists)
+                () => handleRemoveService(service.id)
               }>
                 <Trash size={20} color="#E12729" weight="duotone" />
               </button>
@@ -274,21 +236,19 @@ export function ServiceStep({
               </div>
               {service.materials.length > 0 && (
                 <div className="stretch material-list">
-                  {service.materials.map((material) => material.deleted
-                    ? null
-                    : (
-                      <div key={material.id} className="material-item">
-                        <span>{`${material.quantity} ${material.unit}`}</span>
-                        <strong>{material.name}</strong>
-                        <button onClick={() => {
-                          handleRemoveMaterial(
-                            service.id, material.id, material.alreadyExists
-                          );
-                        }}>
-                          <Trash size={20} color="#E12729" weight="duotone" />
-                        </button>
-                      </div>
-                    ))}
+                  {service.materials.map((material) => (
+                    <div key={material.id} className="material-item">
+                      <span>{`${material.quantity} ${material.unit}`}</span>
+                      <strong>{material.name}</strong>
+                      <button onClick={() => {
+                        handleRemoveMaterial(
+                          service.id, material.id
+                        );
+                      }}>
+                        <Trash size={20} color="#E12729" weight="duotone" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               )}
               <Button

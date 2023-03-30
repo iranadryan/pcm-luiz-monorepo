@@ -10,6 +10,7 @@ import { NoData } from '../../../../components/NoData';
 import { ActivitiesList, ActivityInput } from './styles';
 import { AddMaterialModal } from '../AddMaterialModal';
 import { TextArea } from '../../../../components/TextArea';
+import { FormGroup } from '../../../../components/FormGroup';
 
 interface ServiceStepProps {
   serviceOptions: Option[];
@@ -24,6 +25,7 @@ interface ServiceStepProps {
     name: keyof FormData,
     data: string | number | null | undefined | Service[]
   ) => void;
+  getErrorMessage: (field: string) => string | undefined;
 }
 
 export function ServiceStep({
@@ -33,6 +35,7 @@ export function ServiceStep({
   materialUnits,
   data,
   onDataChange,
+  getErrorMessage
 }: ServiceStepProps) {
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [materialModalIsVisible, setMaterialModalIsVisible] = useState(false);
@@ -57,7 +60,7 @@ export function ServiceStep({
       startTime: data.startTime,
       endTime: data.startTime,
       endDate: data.startDate,
-      executorId: '',
+      executorId: null,
       description: '',
       materials: []
     });
@@ -169,6 +172,7 @@ export function ServiceStep({
           <Plus color="#FFFFFF" size={20} weight="bold" />
         </button>
       </div>
+      <small className="error-message">{getErrorMessage('services')}</small>
       <ActivitiesList>
         {data.services.length === 0 && (
           <NoData
@@ -176,7 +180,7 @@ export function ServiceStep({
             text="Aqui você insere as atividades da sua ordem"
           />
         )}
-        {data.services.map((service) => (
+        {data.services.map((service, index) => (
           <ActivityInput key={service.id}>
             <header>
               <h3>{service.name}</h3>
@@ -208,15 +212,17 @@ export function ServiceStep({
                   handleChangeServiceData(service.id, 'endDate', value);
                 }}
               />
-              <Select
-                label="Executante"
-                placeholder="Selecione"
-                options={executorOptions}
-                selected={service.executorId}
-                onSelect={(value) => {
-                  handleChangeServiceData(service.id, 'executorId', value);
-                }}
-              />
+              <FormGroup error={getErrorMessage(`services.${index}.executorId`)}>
+                <Select
+                  label="Executante"
+                  placeholder="Selecione"
+                  options={executorOptions}
+                  selected={service.executorId}
+                  onSelect={(value) => {
+                    handleChangeServiceData(service.id, 'executorId', value);
+                  }}
+                />
+              </FormGroup>
               <div className="stretch">
                 <TextArea
                   label="Descrição"

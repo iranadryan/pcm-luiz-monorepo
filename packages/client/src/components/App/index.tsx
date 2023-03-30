@@ -12,6 +12,7 @@ import { Routes } from '../../Routes';
 
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import { ToastContainer } from '../Toast/ToastContainer';
 
 export function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -20,8 +21,8 @@ export function App() {
     links: [
       httpBatchLink({
         // url: 'https://pcm-luiz-api.onrender.com/trpc'
-        // url: 'http://localhost:3001/trpc'
-        url: 'http://3.137.211.109/trpc'
+        url: 'http://localhost:3001/trpc'
+        // url: 'http://3.137.211.109/trpc'
       })
     ]
   }));
@@ -35,6 +36,7 @@ export function App() {
           <Header />
           <Routes />
         </Container>
+        <ToastContainer />
       </QueryClientProvider>
     </trpc.Provider>
   );

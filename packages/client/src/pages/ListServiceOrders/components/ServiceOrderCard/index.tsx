@@ -1,10 +1,17 @@
 import { Container } from './styles';
 import { Button } from '../../../../components/Button';
 import { ServiceOrder } from 'server/src/types';
-import { ArrowRight, Gear, NotePencil } from 'phosphor-react';
+import {
+  ArrowRight,
+  DotsThreeOutlineVertical,
+  Gear,
+  NotePencil
+} from 'phosphor-react';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { takeTwoNames } from '../../../../utils/takeTwoNames';
+import { CardContextMenu } from '../CardContextMenu';
+import { useState } from 'react';
 
 interface ServiceOrderCardProps {
   serviceOrder: ServiceOrder;
@@ -19,10 +26,16 @@ export function ServiceOrderCard({ serviceOrder: {
   startDate,
   endDate,
 } }: ServiceOrderCardProps) {
+  const [contextMenuIsVisible, setContextMenuIsVisible] = useState(false);
   const navigate = useNavigate();
 
   return (
     <Container>
+      <CardContextMenu
+        isVisible={contextMenuIsVisible}
+        onClose={() => setContextMenuIsVisible(false)}
+        serviceOrderId={id}
+      />
       <header>
         <div className="icon">
           <Gear color="#007F4E" size={32} weight="duotone" />
@@ -31,6 +44,12 @@ export function ServiceOrderCard({ serviceOrder: {
         <small className={`${status === 'CLOSED' ? '' : 'open'}`}>
           {status === 'CLOSED' ? 'FECHADA' : 'ABERTA'}
         </small>
+        <button
+          className="context-button"
+          onClick={() => setContextMenuIsVisible(true)}
+        >
+          <DotsThreeOutlineVertical color="#48AF7A" size={20} weight="fill" />
+        </button>
       </header>
       <div className="info">
         <div>
@@ -52,7 +71,7 @@ export function ServiceOrderCard({ serviceOrder: {
         )}
       </div>
       <footer>
-        {!number && (
+        {status === 'OPEN' && (
           <Button onClick={() => {
             navigate(`edit/${id}`);
           }} secondary>

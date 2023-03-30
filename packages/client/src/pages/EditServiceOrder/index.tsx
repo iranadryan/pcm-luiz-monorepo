@@ -13,6 +13,8 @@ import { Container } from './styles';
 import { ServiceOrderUpdateFormData } from 'server/src/types';
 import { serviceOrderSchema } from './utils/serviceOrderSchema';
 import { Loader } from '../../components/Loader';
+import useErrors from '../../hooks/useErrors';
+import { toast } from '../../utils/toast';
 
 export interface Material {
   id: string;
@@ -54,13 +56,14 @@ export function EditServiceOrder() {
   const [currentStep, setCurrentStep] = useState(0);
   const [concludedModalIsVisible, setConcludedIsVisible] = useState(false);
   const FormTitles = ['EDITAR ORDEM DE SERVIÇO', 'ALTERAR AS ATIVIDADES'];
-
   const { data: trucks } = trpc.truck.list.useQuery();
   const { data: drivers } = trpc.person.list.useQuery('DRIVER');
   const { data: mechanics } = trpc.person.list.useQuery('MECHANIC');
   const { data: services } = trpc.service.list.useQuery();
   const { data: materials } = trpc.product.list.useQuery();
   const serviceOrderMutation = trpc.serviceOrder.update.useMutation();
+  const { setAllErrors, getErrorMessageByFieldName } = useErrors();
+
   const truckOptions: Option[] = useMemo<Option[]>(() => !trucks
     ? []
     : trucks.map((truck) => ({
@@ -105,8 +108,8 @@ export function EditServiceOrder() {
   } = trpc.serviceOrder.getUpdateFormData.useQuery(id || '');
   const [formData, setFormData] = useState<FormData>({
     id: '',
-    startDate: moment().format('DDMMYYYY'),
-    startTime: moment().format('HHmm'),
+    startDate: '',
+    startTime: '',
     odometer: null,
     driverId: null,
     truckId: null,
@@ -122,7 +125,21 @@ export function EditServiceOrder() {
   }, []);
 
   useEffect(() => {
-    if (serviceOrder) {
+    const emptyState = {
+      id: '',
+      startDate: '',
+      startTime: '',
+      odometer: null,
+      driverId: null,
+      truckId: null,
+      observation: '',
+      services: [],
+    };
+
+    if (
+      serviceOrder &&
+      JSON.stringify(formData) === JSON.stringify(emptyState)
+    ) {
       setFormData({
         id: serviceOrder.id,
         startDate: moment(serviceOrder.startDate).add(3, 'h').format('DDMMYYYY'),
@@ -154,7 +171,7 @@ export function EditServiceOrder() {
         })),
       });
     }
-  }, [serviceOrder]);
+  }, [formData, serviceOrder]);
 
   async function handleSubmitForm() {
     setIsLoading(true);
@@ -162,7 +179,16 @@ export function EditServiceOrder() {
 
     if (!validatedFormData.success) {
       setIsLoading(false);
-      console.log(validatedFormData.error.issues);
+      toast({
+        type: 'danger',
+        text: 'Preencha todos os campos obrigatórios.',
+        duration: 4000
+      });
+      const errors = validatedFormData.error.issues.map((error) => ({
+        field: error.path.join('.'),
+        message: error.message
+      }));
+      setAllErrors(errors);
       return;
     }
 
@@ -217,6 +243,7 @@ export function EditServiceOrder() {
         driverOptions={driverOptions}
         data={formData}
         onDataChange={handleDataChange}
+        getErrorMessage={getErrorMessageByFieldName}
       />;
     case 1:
       return <ServiceStep
@@ -226,6 +253,7 @@ export function EditServiceOrder() {
         materialUnits={materialUnits}
         data={formData}
         onDataChange={handleDataChange}
+        getErrorMessage={getErrorMessageByFieldName}
       />;
     }
   }

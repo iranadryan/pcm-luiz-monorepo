@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const ActivitiesList = styled.div`
+  margin-top: 12px;
 `;
 
 export const ActivityInput = styled.div`

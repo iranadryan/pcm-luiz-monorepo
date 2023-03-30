@@ -48,7 +48,6 @@ export const Container = styled.div`
     .add-activity {
       display: flex;
       gap: 8px;
-      margin-bottom: 12px;
 
       button {
         width: 56px;
@@ -59,6 +58,12 @@ export const Container = styled.div`
         border: none;
         border-radius: 4px;
       }
+    }
+
+    .error-message {
+      color: #E12729;
+      font-size: 12px;
+      font-weight: 600;
     }
   }
 

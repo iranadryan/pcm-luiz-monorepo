@@ -20,7 +20,8 @@ export function ListServiceOrders() {
     ? serviceOrders.filter(
       (serviceOrder) => (
         ((serviceOrder.number?.toString().includes(filterInput) || ''.includes(filterInput)) ||
-          serviceOrder.truck.plate.includes(filterInput)) &&
+          serviceOrder.driver.name.includes(filterInput.toUpperCase()) ||
+          serviceOrder.truck.plate.includes(filterInput.toUpperCase())) &&
         (statusSelected === 'ALL' ? true : serviceOrder.status === statusSelected)
       )
     )
@@ -34,7 +35,7 @@ export function ListServiceOrders() {
       </Link>
       <div className="filters">
         <Input
-          placeholder="Digite o número da OS ou Placa"
+          placeholder="Número da OS, Placa ou Motorista"
           value={filterInput}
           onChange={(e) => setFilterInput(e.target.value)}
         />
