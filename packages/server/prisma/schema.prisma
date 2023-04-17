@@ -90,6 +90,7 @@ model ServiceOrderService {
   endDate                     DateTime                      @db.Date
   endTime                     DateTime                      @db.Time()
   description                 String?
+  isEnded                     Boolean                       @default(false)
   serviceOrder                ServiceOrder                  @relation(fields: [serviceOrderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   serviceOrderId              String
   ServiceOrderServiceMaterial ServiceOrderServiceMaterial[]

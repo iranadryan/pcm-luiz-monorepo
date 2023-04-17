@@ -75,6 +75,7 @@ export const serviceOrderRouter = router({
               startTime: true,
               endDate: true,
               endTime: true,
+              isEnded: true,
               service: {
                 select: {
                   code: true,
@@ -137,6 +138,7 @@ export const serviceOrderRouter = router({
           endDate: service.endDate,
           endTime: service.endTime,
           description: service.description,
+          isEnded: service.isEnded,
           serviceOrderId: serviceOrder.id,
         };
         const serviceOrderService = await prisma.serviceOrderService.create({
@@ -182,6 +184,7 @@ export const serviceOrderRouter = router({
               endDate: true,
               endTime: true,
               description: true,
+              isEnded: true,
               service: {
                 select: {
                   id: true,
@@ -251,6 +254,7 @@ export const serviceOrderRouter = router({
           endDate: service.endDate,
           endTime: service.endTime,
           description: service.description,
+          isEnded: service.isEnded,
           serviceOrderId: serviceOrder.id
         };
 
@@ -321,6 +325,25 @@ export const serviceOrderRouter = router({
 
       return serviceOrder;
     }),
+  delete: publicProcedure
+    .input(z.string())
+    .mutation(async ({ input }) => {
+      const serviceOrderExists = await prisma.serviceOrder.findUnique({
+        where: {
+          id: input
+        }
+      });
+
+      if (!serviceOrderExists) {
+        throw new Error(`Service order does not exists: ${input}`);
+      }
+
+      await prisma.serviceOrder.delete({
+        where: {
+          id: input
+        }
+      });
+    }),
   close: publicProcedure
     .input(closeInputSchemaValidation)
     .mutation(async ({ input }) => {
@@ -342,6 +365,14 @@ export const serviceOrderRouter = router({
           endDate: input.endDate,
           endTime: input.endTime,
           status: 'CLOSED'
+        }
+      });
+      await prisma.serviceOrderService.updateMany({
+        where: {
+          serviceOrderId: input.id
+        },
+        data: {
+          isEnded: true,
         }
       });
 

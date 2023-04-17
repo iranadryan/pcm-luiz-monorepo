@@ -83,8 +83,12 @@ export const createInputSchemaValidation = z.object({
     }),
 
     description: z.string({
-      invalid_type_error: 'description must be a string'
+      invalid_type_error: 'Description must be a string'
     }).optional(),
+
+    isEnded: z.boolean({
+      invalid_type_error: 'Is ended must be a boolean'
+    }).default(false),
 
     materials: z.array(z.object({
       materialId: z.string({
@@ -198,6 +202,10 @@ export const updateInputSchemaValidation = z.object({
     description: z.string({
       invalid_type_error: 'description must be a string'
     }).optional(),
+
+    isEnded: z.boolean({
+      invalid_type_error: 'Is ended must be a boolean'
+    }).default(false),
 
     materials: z.array(z.object({
       id: z.string({
