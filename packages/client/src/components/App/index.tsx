@@ -13,6 +13,7 @@ import { Routes } from '../../Routes';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import { ToastContainer } from '../Toast/ToastContainer';
+import { FilterContextProvider } from '../../contexts/FilterContext';
 
 export function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -30,13 +31,15 @@ export function App() {
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <Container>
-          <SelectModalStyles />
-          <GlobalStyles />
-          <Header />
-          <Routes />
-        </Container>
-        <ToastContainer />
+        <FilterContextProvider>
+          <Container>
+            <SelectModalStyles />
+            <GlobalStyles />
+            <Header />
+            <Routes />
+          </Container>
+          <ToastContainer />
+        </FilterContextProvider>
       </QueryClientProvider>
     </trpc.Provider>
   );

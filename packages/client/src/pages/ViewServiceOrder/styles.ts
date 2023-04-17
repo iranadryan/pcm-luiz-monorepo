@@ -3,7 +3,7 @@ import { HEADER_HEIGHT } from '../../components/Header/styles';
 
 export const Container = styled.div`
   display: grid;
-  grid-template-rows: 48px 1fr 52px;
+  grid-template-rows: 49px 1fr 53px;
   row-gap: 20px;
   height: calc(100% - ${HEADER_HEIGHT});
 
@@ -89,6 +89,9 @@ export const Container = styled.div`
       h4 {
         font-weight: 600;
         font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
       }
 
       .info {

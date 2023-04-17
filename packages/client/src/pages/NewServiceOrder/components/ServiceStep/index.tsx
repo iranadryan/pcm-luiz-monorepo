@@ -11,6 +11,7 @@ import { ActivitiesList, ActivityInput } from './styles';
 import { AddMaterialModal } from '../AddMaterialModal';
 import { TextArea } from '../../../../components/TextArea';
 import { FormGroup } from '../../../../components/FormGroup';
+import { Checkbox } from '../../../../components/Checkbox';
 
 interface ServiceStepProps {
   serviceOptions: Option[];
@@ -62,6 +63,7 @@ export function ServiceStep({
       endDate: data.startDate,
       executorId: null,
       description: '',
+      isEnded: false,
       materials: []
     });
 
@@ -78,7 +80,7 @@ export function ServiceStep({
   function handleChangeServiceData(
     id: string,
     name: keyof Service,
-    value: string
+    value: string | boolean
   ) {
     const services = [...data.services];
     const serviceIndex = services.findIndex(
@@ -251,9 +253,17 @@ export function ServiceStep({
                   ))}
                 </div>
               )}
+              <Checkbox
+                name="isEnded"
+                label="Finalizado"
+                checked={service.isEnded}
+                onCheck={() => {
+                  handleChangeServiceData(service.id, 'isEnded', !service.isEnded);
+                }}
+              />
               <Button
                 secondary
-                className="right-side"
+                // className="right-side"
                 onClick={() => {
                   setAddMaterialServiceId(service.id);
                   setMaterialModalIsVisible(true);

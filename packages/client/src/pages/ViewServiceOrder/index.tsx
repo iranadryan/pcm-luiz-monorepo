@@ -119,7 +119,12 @@ export function ViewServiceOrder() {
             <h3>ATIVIDADES</h3>
             {serviceOrder.ServiceOrderService.map((service) => (
               <div key={service.id} className="card">
-                <h4>{service.service.code} - {service.service.name}</h4>
+                <h4>
+                  {service.service.code} - {service.service.name}
+                  {service.isEnded && (
+                    <Check color="#007F4E" size={20} weight="bold" />
+                  )}
+                </h4>
                 <div className="info">
                   <div>
                     <strong>Início</strong>

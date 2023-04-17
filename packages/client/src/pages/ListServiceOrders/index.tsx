@@ -10,26 +10,58 @@ import { Select } from '../../components/Select';
 import { ServiceOrderCard } from './components/ServiceOrderCard';
 import { NoData } from '../../components/NoData';
 import { Loader } from '../../components/Loader';
+import { DateInput } from '../../components/DateInput';
+import moment from 'moment';
+import { useFilterContext } from '../../contexts/FilterContext';
+import { ConfirmDeleteModal } from './components/ConfirmDeleteModal';
 
 export function ListServiceOrders() {
-  const [statusSelected, setStatusSelected] = useState('ALL');
-  const [filterInput, setFilterInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [deleteModalIsVisible, setDeleteModalIsVisible] = useState(false);
+  const [orderToBeDeleted, setOrderToBeDeleted] = useState<string | null>(null);
+  const {
+    statusSelected,
+    setStatusSelected,
+    filterInput,
+    setFilterInput,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate
+  } = useFilterContext();
 
-  const { data: serviceOrders } = trpc.serviceOrder.list.useQuery();
+  const { data: serviceOrders, refetch } = trpc.serviceOrder.list.useQuery();
   const serviceOrdersToShow = useMemo(() => serviceOrders
     ? serviceOrders.filter(
       (serviceOrder) => (
         ((serviceOrder.number?.toString().includes(filterInput) || ''.includes(filterInput)) ||
           serviceOrder.driver.name.includes(filterInput.toUpperCase()) ||
           serviceOrder.truck.plate.includes(filterInput.toUpperCase())) &&
-        (statusSelected === 'ALL' ? true : serviceOrder.status === statusSelected)
+        (statusSelected === 'ALL' ? true : serviceOrder.status === statusSelected) &&
+        (startDate.length === 10 ? moment(serviceOrder.startDate).add(3, 'h').toDate() >= moment(startDate, 'DDMMYYYY').toDate() : true) &&
+        (endDate.length === 10 ? moment(serviceOrder.startDate).add(3, 'h').toDate() <= moment(endDate, 'DDMMYYYY').toDate() : true)
       )
     )
-    : [], [statusSelected, filterInput, serviceOrders]);
+    : [], [statusSelected, filterInput, serviceOrders, startDate, endDate]);
+
+  function handleDeleteServiceOrder(id: string) {
+    setOrderToBeDeleted(id);
+    setDeleteModalIsVisible(true);
+  }
 
   return (
     <Container>
-      <Loader isLoading={!serviceOrders} />
+      <Loader isLoading={!serviceOrders || isLoading} />
+      <ConfirmDeleteModal
+        isVisible={deleteModalIsVisible}
+        setIsLoading={setIsLoading}
+        onClose={() => {
+          setDeleteModalIsVisible(false);
+          setOrderToBeDeleted(null);
+        }}
+        onDelete={() => refetch()}
+        orderId={orderToBeDeleted}
+      />
       <Link to="new" className="new-order">
         <Plus color="#FFFFFF" size={24} weight="bold" />
       </Link>
@@ -49,6 +81,18 @@ export function ListServiceOrders() {
           selected={statusSelected}
           onSelect={setStatusSelected}
         />
+        <div className="date-filter">
+          <DateInput
+            placeholder="De (Data Incial)"
+            value={startDate}
+            onChange={(value) => setStartDate(value)}
+          />
+          <DateInput
+            placeholder="Até (Data Incial)"
+            value={endDate}
+            onChange={(value) => setEndDate(value)}
+          />
+        </div>
       </div>
       <Title title="ORDENS DE SERVIÇO" />
       <div className="cards-list">
@@ -62,6 +106,7 @@ export function ListServiceOrders() {
           <ServiceOrderCard
             key={serviceOrder.id}
             serviceOrder={serviceOrder}
+            onDelete={handleDeleteServiceOrder}
           />
         ))}
       </div>

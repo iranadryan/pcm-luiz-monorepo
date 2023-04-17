@@ -29,6 +29,7 @@ const serviceSchema = z.object({
     invalid_type_error: 'Executante é obrigatório'
   }).uuid(),
   description: z.string(),
+  isEnded: z.boolean(),
   materials: z.array(materialSchema),
 });
 

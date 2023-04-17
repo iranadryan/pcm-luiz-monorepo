@@ -32,6 +32,7 @@ export interface Service {
   endDate: string;
   executorId: string | null;
   description: string;
+  isEnded: boolean;
   materials: Material[];
 }
 
@@ -126,8 +127,8 @@ export function DuplicateServiceOrder() {
       JSON.stringify(formData) === JSON.stringify(emptyState)
     ) {
       setFormData({
-        startDate: moment().format('DDMMYYYY'),
-        startTime: moment().format('HHmm'),
+        startDate: moment(serviceOrder.startDate).add(3, 'h').format('DDMMYYYY'),
+        startTime: moment(serviceOrder.startTime).format('HHmm'),
         odometer: serviceOrder.odometer,
         driverId: serviceOrder.driver.id,
         truckId: serviceOrder.truck.id,
@@ -136,11 +137,12 @@ export function DuplicateServiceOrder() {
           id: service.id,
           serviceId: service.service.id,
           name: `${service.service.code} - ${service.service.name}`,
-          startTime: moment().format('HHmm'),
-          endDate: moment().format('DDMMYYYY'),
-          endTime: moment().format('HHmm'),
+          startTime: moment(service.startTime).format('HHmm'),
+          endDate: moment(service.endDate).add(3, 'h').format('DDMMYYYY'),
+          endTime: moment(service.endTime).format('HHmm'),
           executorId: service.executor.id,
           description: service.description || '',
+          isEnded: service.isEnded,
           materials: service.ServiceOrderServiceMaterial.map((material) => ({
             id: material.id,
             name: `${material.material.code} - ${material.material.name}`,
@@ -193,6 +195,7 @@ export function DuplicateServiceOrder() {
         endDate: moment(service.endDate, 'DDMMYYYY').toDate(),
         endTime: moment(service.endTime, 'HHmm').toDate(),
         description: service.description === '' ? undefined : service.description,
+        isEnded: service.isEnded,
         materials: service.materials.map((material) => ({
           materialId: material.id,
           quantity: material.quantity

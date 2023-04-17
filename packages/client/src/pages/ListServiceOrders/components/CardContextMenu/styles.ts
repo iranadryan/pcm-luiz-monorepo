@@ -65,6 +65,14 @@ export const Container = styled.div<ContainerProps>`
       background-color: rgba(211, 229, 217, 0.5);
       font-weight: 400;
     }
+
+    &.danger {
+      color: #E12729;
+
+      &:hover, &:active {
+        background-color: rgba(255, 198, 191, 0.3);
+      }
+    }
   }
 
   .close {

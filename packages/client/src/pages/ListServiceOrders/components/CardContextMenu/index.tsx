@@ -1,18 +1,20 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Copy } from 'phosphor-react';
+import { Copy, Trash } from 'phosphor-react';
 import { Container } from './styles';
 import useAnimatedUnmount from '../../../../hooks/useAnimatedUnmount';
 
 interface CardContextMenuProps {
   isVisible: boolean;
   onClose: () => void;
+  onDelete: () => void;
   serviceOrderId: string;
 }
 
 export function CardContextMenu({
   isVisible,
   onClose,
+  onDelete,
   serviceOrderId
 }: CardContextMenuProps) {
   const contextRef = useRef<HTMLDivElement | null>(null);
@@ -52,6 +54,13 @@ export function CardContextMenu({
       }}>
         <Copy color="#888888" size={16} weight="bold" />
         Duplicar Ordem
+      </button>
+      <button className="danger" onClick={() => {
+        onClose();
+        onDelete();
+      }}>
+        <Trash color="#E12729" size={16} weight="bold" />
+        Deletar Ordem
       </button>
     </Container>
   );

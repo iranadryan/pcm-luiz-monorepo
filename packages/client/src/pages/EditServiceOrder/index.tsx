@@ -37,6 +37,7 @@ export interface Service {
   endDate: string;
   executorId: string | null;
   description: string;
+  isEnded: boolean;
   materials: Material[];
 }
 
@@ -159,6 +160,7 @@ export function EditServiceOrder() {
           endTime: moment(service.endTime).format('HHmm'),
           executorId: service.executor.id,
           description: service.description || '',
+          isEnded: service.isEnded,
           materials: service.ServiceOrderServiceMaterial.map((material) => ({
             id: material.id,
             materialId: material.material.id,
@@ -210,6 +212,7 @@ export function EditServiceOrder() {
         endDate: moment(service.endDate, 'DDMMYYYY').toDate(),
         endTime: moment(service.endTime, 'HHmm').toDate(),
         description: service.description === '' ? undefined : service.description,
+        isEnded: service.isEnded,
         materials: service.materials.map((material) => ({
           id: material.alreadyExists ? material.id : undefined,
           deleted: material.deleted,

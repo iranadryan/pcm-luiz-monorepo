@@ -3,7 +3,7 @@ import { HEADER_HEIGHT } from '../../components/Header/styles';
 
 export const Container = styled.div`
   display: grid;
-  grid-template-rows: 108px 24px 1fr;
+  grid-template-rows: 169px 25px 1fr;
   row-gap: 20px;
   height: calc(100% - ${HEADER_HEIGHT});
 
@@ -11,6 +11,11 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: 12px;
+
+    .date-filter {
+      display: flex;
+      gap: 12px;
+    }
   }
 
   .cards-list {

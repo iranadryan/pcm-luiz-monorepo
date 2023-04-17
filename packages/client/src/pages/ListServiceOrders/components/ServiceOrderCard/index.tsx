@@ -5,7 +5,7 @@ import {
   ArrowRight,
   DotsThreeOutlineVertical,
   Gear,
-  NotePencil
+  NotePencil,
 } from 'phosphor-react';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
@@ -15,17 +15,13 @@ import { useState } from 'react';
 
 interface ServiceOrderCardProps {
   serviceOrder: ServiceOrder;
+  onDelete: (id: string) => void;
 }
 
-export function ServiceOrderCard({ serviceOrder: {
-  id,
-  status,
-  number,
-  truck,
-  driver,
-  startDate,
-  endDate,
-} }: ServiceOrderCardProps) {
+export function ServiceOrderCard({
+  serviceOrder: { id, status, number, truck, driver, startDate, endDate },
+  onDelete,
+}: ServiceOrderCardProps) {
   const [contextMenuIsVisible, setContextMenuIsVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -34,6 +30,7 @@ export function ServiceOrderCard({ serviceOrder: {
       <CardContextMenu
         isVisible={contextMenuIsVisible}
         onClose={() => setContextMenuIsVisible(false)}
+        onDelete={() => onDelete(id)}
         serviceOrderId={id}
       />
       <header>
@@ -72,16 +69,22 @@ export function ServiceOrderCard({ serviceOrder: {
       </div>
       <footer>
         {status === 'OPEN' && (
-          <Button onClick={() => {
-            navigate(`edit/${id}`);
-          }} secondary>
+          <Button
+            onClick={() => {
+              navigate(`edit/${id}`);
+            }}
+            secondary
+          >
             Editar
             <NotePencil color="#FFFFFF" size={18} weight="bold" />
           </Button>
         )}
-        <Button onClick={() => {
-          navigate(`view/${id}`);
-        }} secondary>
+        <Button
+          onClick={() => {
+            navigate(`view/${id}`);
+          }}
+          secondary
+        >
           Visualizar
           <ArrowRight color="#FFFFFF" size={18} weight="bold" />
         </Button>
