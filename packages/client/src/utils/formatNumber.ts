@@ -1,3 +1,3 @@
-export function formatNumber(number: number) {
-  return Intl.NumberFormat().format(number);
+export function formatNumber(number: number, suffix?: string) {
+  return `${Intl.NumberFormat().format(number)}${suffix ? suffix : ''}`;
 }
