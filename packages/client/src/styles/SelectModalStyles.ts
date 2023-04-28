@@ -59,19 +59,6 @@ export const SelectModalStyles = createGlobalStyle`
     }
 
     .p-dropdown-items-wrapper {
-      &::-webkit-scrollbar {
-        width: 12px;
-      }
-
-      &::-webkit-scrollbar-track {
-        border-radius: 999px;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background-color: #48AF7A;
-        border-radius: 999px;
-        border: 2px solid #FBFBFB;
-      }
 
       .p-dropdown-empty-message {
         padding: 8px;

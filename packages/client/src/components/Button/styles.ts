@@ -10,6 +10,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
   width: 100%;
   height: 52px;
   background: #007F4E;
+  outline: none;
   border: none;
   border-radius: 4px;
   color: #E7F0EB;

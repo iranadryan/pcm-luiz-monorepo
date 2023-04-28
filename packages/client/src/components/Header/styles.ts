@@ -1,12 +1,14 @@
 import styled from 'styled-components';
 
-export const HEADER_HEIGHT = '108px';
-
 export const Container = styled.header`
-  padding: 32px 0;
+  padding: 16px 0 32px;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
 
   img {
     height: 44px;

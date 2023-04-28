@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Loader } from '../../components/Loader';
 import { Title } from '../../components/Title';
+import { useResponsiveContext } from '../../contexts/ResponsiveContext';
 import { trpc } from '../../lib/trpc';
 import { formatNumber } from '../../utils/formatNumber';
 import { takeTwoNames } from '../../utils/takeTwoNames';
@@ -19,6 +20,7 @@ export function ViewServiceOrder() {
   const [changeNumberModalIsVisible, setChangeNumberModalIsVisible] =
     useState(false);
   const { id } = useParams();
+  const { headerHeight } = useResponsiveContext();
 
   if (!id) {
     return null;
@@ -44,7 +46,7 @@ export function ViewServiceOrder() {
   }
 
   return (
-    <Container>
+    <Container headerHeight={headerHeight}>
       <Loader isLoading={!serviceOrder || isLoading} />
       <CloseOrderModal
         isVisible={closeOrderModalIsVisible}
@@ -70,7 +72,7 @@ export function ViewServiceOrder() {
         onIsLoading={setIsLoading}
       />
       <header>
-        <Link to="/" className="back-button">
+        <Link to="/service-orders" className="back-button">
           <ArrowLeft color="#FFFFFF" size={24} weight="bold" />
         </Link>
         <Title

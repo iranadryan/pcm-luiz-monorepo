@@ -7,39 +7,49 @@ import { trpc } from '../../lib/trpc';
 import { GlobalStyles } from '../../styles/GlobalStyles';
 import { SelectModalStyles } from '../../styles/SelectModalStyles';
 import { Header } from '../Header';
-import { Container } from './styles';
+import { AppContainer, Container } from './styles';
 import { Routes } from '../../Routes';
 
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import { ToastContainer } from '../Toast/ToastContainer';
 import { FilterContextProvider } from '../../contexts/FilterContext';
+import { Sidebar } from '../Sidebar';
+import { ResponsiveContextProvider } from '../../contexts/ResponsiveContext';
 
 export function App() {
   const [queryClient] = useState(() => new QueryClient());
-  const [trpcClient] = useState(() => trpc.createClient({
-    transformer: SuperJSON,
-    links: [
-      httpBatchLink({
-        // url: 'https://pcm-luiz-api.onrender.com/trpc'
-        // url: 'http://localhost:3001/trpc'
-        url: 'http://3.137.211.109/trpc'
-      })
-    ]
-  }));
+  const [trpcClient] = useState(() =>
+    trpc.createClient({
+      transformer: SuperJSON,
+      links: [
+        httpBatchLink({
+          // url: 'https://pcm-luiz-api.onrender.com/trpc'
+          url: 'http://localhost:3001/trpc',
+          // url: 'http://3.137.211.109/trpc'
+          // url: 'https://api.sistemapcm.com/trpc'
+        }),
+      ],
+    })
+  );
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <FilterContextProvider>
-          <Container>
-            <SelectModalStyles />
-            <GlobalStyles />
-            <Header />
-            <Routes />
-          </Container>
-          <ToastContainer />
-        </FilterContextProvider>
+        <ResponsiveContextProvider>
+          <FilterContextProvider>
+            <AppContainer>
+              <Sidebar />
+              <Container>
+                <SelectModalStyles />
+                <GlobalStyles />
+                <Header />
+                <Routes />
+              </Container>
+            </AppContainer>
+            <ToastContainer />
+          </FilterContextProvider>
+        </ResponsiveContextProvider>
       </QueryClientProvider>
     </trpc.Provider>
   );

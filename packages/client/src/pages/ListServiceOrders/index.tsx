@@ -14,6 +14,7 @@ import { DateInput } from '../../components/DateInput';
 import moment from 'moment';
 import { useFilterContext } from '../../contexts/FilterContext';
 import { ConfirmDeleteModal } from './components/ConfirmDeleteModal';
+import { useResponsiveContext } from '../../contexts/ResponsiveContext';
 
 export function ListServiceOrders() {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,6 +30,7 @@ export function ListServiceOrders() {
     endDate,
     setEndDate
   } = useFilterContext();
+  const { headerHeight } = useResponsiveContext();
 
   const { data: serviceOrders, refetch } = trpc.serviceOrder.list.useQuery();
   const serviceOrdersToShow = useMemo(() => serviceOrders
@@ -50,7 +52,7 @@ export function ListServiceOrders() {
   }
 
   return (
-    <Container>
+    <Container headerHeight={headerHeight}>
       <Loader isLoading={!serviceOrders || isLoading} />
       <ConfirmDeleteModal
         isVisible={deleteModalIsVisible}

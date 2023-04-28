@@ -1,11 +1,14 @@
 import styled from 'styled-components';
-import { HEADER_HEIGHT } from '../../components/Header/styles';
 
-export const Container = styled.div`
+interface ContainerProps {
+  headerHeight: string;
+}
+
+export const Container = styled.div<ContainerProps>`
   display: grid;
   grid-template-rows: 48px 1fr 52px;
   row-gap: 20px;
-  height: calc(100% - ${HEADER_HEIGHT});
+  height: calc(100% - ${({ headerHeight }) => headerHeight});
 
   header {
     display: flex;
@@ -26,20 +29,6 @@ export const Container = styled.div`
 
   .form {
     overflow-y: auto;
-
-    &::-webkit-scrollbar {
-      width: 12px;
-    }
-
-    &::-webkit-scrollbar-track {
-      border-radius: 999px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: #48AF7A;
-      border-radius: 999px;
-      border: 4px solid #FBFBFB;
-    }
 
     .date-input {
       display: flex;

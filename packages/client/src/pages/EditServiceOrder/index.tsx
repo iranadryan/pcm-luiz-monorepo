@@ -15,6 +15,7 @@ import { serviceOrderSchema } from './utils/serviceOrderSchema';
 import { Loader } from '../../components/Loader';
 import useErrors from '../../hooks/useErrors';
 import { toast } from '../../utils/toast';
+import { useResponsiveContext } from '../../contexts/ResponsiveContext';
 
 export interface Material {
   id: string;
@@ -64,6 +65,7 @@ export function EditServiceOrder() {
   const { data: materials } = trpc.product.list.useQuery();
   const serviceOrderMutation = trpc.serviceOrder.update.useMutation();
   const { setAllErrors, getErrorMessageByFieldName } = useErrors();
+  const { headerHeight } = useResponsiveContext();
 
   const truckOptions: Option[] = useMemo<Option[]>(() => !trucks
     ? []
@@ -262,7 +264,7 @@ export function EditServiceOrder() {
   }
 
   return (
-    <Container>
+    <Container headerHeight={headerHeight}>
       <Loader isLoading={
         !trucks ||
         !drivers ||
@@ -275,7 +277,7 @@ export function EditServiceOrder() {
       <UpdatedModal isVisible={concludedModalIsVisible} />
       <header>
         {currentStep === 0 && (
-          <Link to="/" className="back-button">
+          <Link to="/service-orders" className="back-button">
             <ArrowLeft color="#FFFFFF" size={24} weight="bold" />
           </Link>
         )}
