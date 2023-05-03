@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Copy, Trash } from 'phosphor-react';
+import { Copy, NotePencil, Trash } from 'phosphor-react';
 import { Container } from './styles';
 import useAnimatedUnmount from '../../../../hooks/useAnimatedUnmount';
+import { useResponsiveContext } from '../../../../contexts/ResponsiveContext';
 
 interface CardContextMenuProps {
   isVisible: boolean;
@@ -20,6 +21,7 @@ export function CardContextMenu({
   const contextRef = useRef<HTMLDivElement | null>(null);
   const { shouldRender, animatedElementRef } = useAnimatedUnmount(isVisible);
   const navigate = useNavigate();
+  const { isMobile } = useResponsiveContext();
 
   const setRefs = useCallback((element: HTMLDivElement) => {
     contextRef.current = element;
@@ -55,13 +57,23 @@ export function CardContextMenu({
         <Copy color="#888888" size={16} weight="bold" />
         Duplicar Ordem
       </button>
-      <button className="danger" onClick={() => {
-        onClose();
-        onDelete();
-      }}>
-        <Trash color="#E12729" size={16} weight="bold" />
-        Deletar Ordem
-      </button>
+      {!isMobile && (
+        <>
+          <button onClick={() => {
+            navigate(`edit/${serviceOrderId}`);
+          }}>
+            <NotePencil color="#888888" size={16} weight="bold" />
+            Editar Ordem
+          </button>
+          <button className="danger" onClick={() => {
+            onClose();
+            onDelete();
+          }}>
+            <Trash color="#E12729" size={16} weight="bold" />
+            Deletar Ordem
+          </button>
+        </>
+      )}
     </Container>
   );
 }
