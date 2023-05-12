@@ -38,9 +38,21 @@ export function ServiceOrderCard({
           <Gear color="#007F4E" size={32} weight="duotone" />
         </div>
         <strong>{number ? `#${number}` : 'ORDEM'}</strong>
-        <small className={`${status === 'CLOSED' ? '' : 'open'}`}>
-          {status === 'CLOSED' ? 'FECHADA' : 'ABERTA'}
-        </small>
+        {status === 'OPEN' && (
+          <small className="open">
+            ABERTA
+          </small>
+        )}
+        {status === 'CLOSED' && (
+          <small>
+            FECHADA
+          </small>
+        )}
+        {status === 'LAUNCHED' && (
+          <small className="launched">
+            LANÇADA
+          </small>
+        )}
         <button
           className="context-button"
           onClick={() => setContextMenuIsVisible(true)}

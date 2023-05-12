@@ -41,6 +41,10 @@ export const Container = styled.section`
       &.open {
         background: #F37324;
       }
+
+      &.launched {
+        background: #3498db;
+      }
     }
 
     .context-button {

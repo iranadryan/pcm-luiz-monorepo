@@ -167,20 +167,22 @@ export function ViewServiceOrder() {
       </main>
       <footer>
         {serviceOrder?.status === 'CLOSED' ? (
-          <Button onClick={exportServiceOrder}>
-            <Export size={20} color="#FFFFFF" weight="bold" />
+          <>
+            <Button onClick={exportServiceOrder}>
+              <Export size={20} color="#FFFFFF" weight="bold" />
             Exportar
-          </Button>
+            </Button>
+            <Button onClick={() => setChangeNumberModalIsVisible(true)}>
+              <Hash size={20} color="#FFFFFF" weight="bold" />
+              {serviceOrder?.number ? 'Alterar Número' : 'Inserir Número'}
+            </Button>
+          </>
         ) : (
           <Button onClick={() => setCloseOrderModalIsVisible(true)}>
             <Check size={20} color="#FFFFFF" weight="bold" />
             Fechar
           </Button>
         )}
-        <Button onClick={() => setChangeNumberModalIsVisible(true)}>
-          <Hash size={20} color="#FFFFFF" weight="bold" />
-          {serviceOrder?.number ? 'Alterar Número' : 'Inserir Número'}
-        </Button>
       </footer>
     </Container>
   );

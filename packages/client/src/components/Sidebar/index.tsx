@@ -20,6 +20,9 @@ export function Sidebar() {
             <li>
               <NavLink to="/service-orders">Principal</NavLink>
             </li>
+            <li>
+              <NavLink to="/service-orders-dashboard">Dashboard</NavLink>
+            </li>
           </ul>
 
           <li>

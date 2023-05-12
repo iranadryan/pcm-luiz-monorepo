@@ -9,6 +9,7 @@ import { ListTrucks } from './pages/ListTrucks';
 import { ListServices } from './pages/ListServices';
 import { ListProducts } from './pages/ListProducts';
 import { ListPeople } from './pages/ListPeople';
+import { ServiceOrderDashboard } from './pages/ServiceOrderDashboard';
 
 export function Routes() {
   return (
@@ -20,6 +21,7 @@ export function Routes() {
       <Route path="service-orders/view/:id" element={<ViewServiceOrder />} />
       <Route path="service-orders/edit/:id" element={<EditServiceOrder />} />
       <Route path="service-orders/duplicate/:id" element={<DuplicateServiceOrder />} />
+      <Route path="service-orders-dashboard" element={<ServiceOrderDashboard />} />
 
       <Route path="trucks" element={<ListTrucks />} />
       <Route path="services" element={<ListServices />} />

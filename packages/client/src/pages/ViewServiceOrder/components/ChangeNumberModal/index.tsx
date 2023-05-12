@@ -4,6 +4,7 @@ import { Button } from '../../../../components/Button';
 import { InputNumber } from '../../../../components/InputNumber';
 import { Modal } from '../../../../components/Modal';
 import { trpc } from '../../../../lib/trpc';
+import { toast } from '../../../../utils/toast';
 import { Container } from './styles';
 
 interface ChangeNumberModalProps {
@@ -32,19 +33,27 @@ export function ChangeNumberModal({
   }, [number]);
 
   async function handleCloseServiceOrder() {
-    onIsLoading(true);
+    try {
+      onIsLoading(true);
 
-    if (!orderNumber) {
-      return;
+      if (!orderNumber) {
+        return;
+      }
+
+      await changeNumberMutation.mutateAsync({
+        id: serviceOrderId,
+        number: orderNumber,
+      });
+      onIsLoading(false);
+      closeModal(true);
+    } catch (error: any) {
+      toast({
+        type: 'danger',
+        text: error.message,
+      });
+      onIsLoading(false);
+      closeModal(false);
     }
-
-    await changeNumberMutation.mutateAsync({
-      id: serviceOrderId,
-      number: orderNumber,
-    });
-
-    onIsLoading(false);
-    closeModal(true);
   }
 
   return (

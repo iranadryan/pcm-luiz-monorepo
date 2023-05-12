@@ -16,6 +16,28 @@ import { ToastContainer } from '../Toast/ToastContainer';
 import { FilterContextProvider } from '../../contexts/FilterContext';
 import { Sidebar } from '../Sidebar';
 import { ResponsiveContextProvider } from '../../contexts/ResponsiveContext';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  ChartDataLabels
+);
 
 export function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -24,9 +46,9 @@ export function App() {
     links: [
       httpBatchLink({
         // url: 'https://pcm-luiz-api.onrender.com/trpc'
-        // url: 'http://localhost:3001/trpc'
+        url: 'http://localhost:3001/trpc'
         // url: 'http://3.137.211.109/trpc'
-        url: 'https://api.sistemapcm.com/trpc'
+        // url: 'https://api.sistemapcm.com/trpc'
       })
     ]
   }));

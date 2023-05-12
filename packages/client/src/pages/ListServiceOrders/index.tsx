@@ -78,6 +78,7 @@ export function ListServiceOrders() {
             { value: 'ALL', label: 'Todas' },
             { value: 'OPEN', label: 'Abertas' },
             { value: 'CLOSED', label: 'Fechadas' },
+            { value: 'LAUNCHED', label: 'Lançadas' },
           ]}
           placeholder="Estado da ordem"
           selected={statusSelected}
