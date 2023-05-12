@@ -78,6 +78,7 @@ model ServiceOrder {
 enum ServiceOrderStatus {
   OPEN
   CLOSED
+  LAUNCHED
 }
 
 model ServiceOrderService {

@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const serviceOrderOutputSchemaValidation = z.object({
   id: z.string(),
   number: z.number().nullable(),
-  status: z.enum(['OPEN', 'CLOSED']),
+  status: z.enum(['OPEN', 'CLOSED', 'LAUNCHED']),
   startDate: z.date(),
   endDate: z.date().nullable(),
   truck: z.object({

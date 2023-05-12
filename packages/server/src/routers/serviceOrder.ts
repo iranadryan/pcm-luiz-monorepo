@@ -13,6 +13,7 @@ import {
   updateInputSchemaValidation,
 } from './schemasValidation/serviceOrder';
 import { formatNumber } from '../utils/formatNumber';
+import { TRPCError } from '@trpc/server';
 
 export const serviceOrderRouter = router({
   list: publicProcedure
@@ -391,12 +392,20 @@ export const serviceOrderRouter = router({
         throw new Error(`Service order does not exists: ${input.id}`);
       }
 
+      if (serviceOrderExists.status === 'OPEN') {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Não é possível inserir número a uma ordem aberta',
+        });
+      }
+
       const serviceOrder = await prisma.serviceOrder.update({
         where: {
           id: input.id
         },
         data: {
-          number: input.number
+          number: input.number,
+          status: 'LAUNCHED'
         }
       });
 

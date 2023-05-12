@@ -11,6 +11,7 @@ import { productRouter } from './routers/product';
 import { personRouter } from './routers/person';
 import { serviceRouter } from './routers/service';
 import { serviceOrderRouter } from './routers/serviceOrder';
+import { serviceOrderDashboardRouter } from './routers/serviceOrderDashboard';
 
 const appRouter = router({
   truck: truckRouter,
@@ -18,6 +19,7 @@ const appRouter = router({
   person: personRouter,
   service: serviceRouter,
   serviceOrder: serviceOrderRouter,
+  serviceOrderDashboard: serviceOrderDashboardRouter,
 });
 const createContext = () => ({});
 
