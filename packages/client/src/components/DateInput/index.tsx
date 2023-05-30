@@ -5,7 +5,7 @@ interface DateInputProps {
   placeholder?: string;
   value: string;
   onChange: (value: string) => void;
-  secondary: boolean;
+  secondary?: boolean;
 }
 
 export function DateInput({
