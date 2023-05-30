@@ -10,5 +10,5 @@ export function formatHours(hoursNumber: number) {
   const [hours] = String(hoursNumber).split('.');
   const minutes = Math.floor((hoursNumber % Number(hours)) * 60);
 
-  return `${hours}:${minutes}${String(minutes).length === 1 ? '0' : ''}`;
+  return `${hours}:${String(minutes).length === 1 ? '0' : ''}${minutes}`;
 }
