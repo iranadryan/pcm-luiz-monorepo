@@ -8,25 +8,25 @@ import { toast } from '../../../../utils/toast';
 
 const NUM_OF_BARS = 7;
 
-export function TotalByService() {
+export function TotalByMechanic() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [totalByService, setTotalByService] = useState<
+  const [totalByMechanic, setTotalByMechanic] = useState<
     {
       total: number;
-      service: string;
+      mechanic: string;
     }[]
   >([]);
   const [currentPage, setCurrentPage] = useState(0);
   const dataShowing = useMemo(
     () =>
-      totalByService.slice(
+      totalByMechanic.slice(
         currentPage * NUM_OF_BARS,
         (currentPage + 1) * NUM_OF_BARS
       ),
-    [currentPage, totalByService]
+    [currentPage, totalByMechanic]
   );
-  const highestValueLastThree = useMemo(
+  const highestValue = useMemo(
     () => Math.max(...dataShowing.map((item) => item.total)),
     [dataShowing]
   );
@@ -55,13 +55,13 @@ export function TotalByService() {
         });
       }
 
-      const totalByServiceData =
-        await trpcClient.serviceOrderDashboard.totalByService.query({
+      const totalByMechanicData =
+        await trpcClient.serviceOrderDashboard.totalByMechanic.query({
           startDate: parsedStartDate,
           endDate: parsedEndDate
         });
 
-      setTotalByService(totalByServiceData);
+      setTotalByMechanic(totalByMechanicData);
       setCurrentPage(0);
     }
 
@@ -71,7 +71,7 @@ export function TotalByService() {
   return (
     <div className="chart-dashboard">
       <header>
-        <h2>TOTAL DE SERVIÇOS POR SERVIÇO</h2>
+        <h2>TOTAL DE SERVIÇOS POR MECÂNICO</h2>
         <div className="range-input">
           <DateInput
             value={startDate}
@@ -91,8 +91,8 @@ export function TotalByService() {
       <div className="container">
         <div className="chart-container">
           <VerticalBarChart
-            labels={dataShowing.map((item) => item.service)}
-            highestValue={highestValueLastThree}
+            labels={dataShowing.map((item) => item.mechanic)}
+            highestValue={highestValue}
             datasets={[
               {
                 data: dataShowing.map((item) => item.total),
@@ -123,12 +123,12 @@ export function TotalByService() {
           <span>
             {currentPage + 1}
             {' '}de{' '}
-            {Math.ceil(totalByService.length / NUM_OF_BARS)}
+            {Math.ceil(totalByMechanic.length / NUM_OF_BARS)}
           </span>
           <button
             aria-label="next-page"
             className={`${
-              (currentPage + 1) * NUM_OF_BARS >= totalByService.length
+              (currentPage + 1) * NUM_OF_BARS >= totalByMechanic.length
                 ? 'hidden'
                 : ''
             }`}

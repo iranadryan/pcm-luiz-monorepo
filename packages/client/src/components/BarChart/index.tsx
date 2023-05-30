@@ -24,8 +24,23 @@ export function BarChart({ labels, datasets, highestValue }: BarChartProps) {
         },
         scales: {
           y: {
-            max: Math.ceil((highestValue * 1.1) / 50) * 50,
+            min: 0,
+            max: Math.ceil((highestValue * 1.1) / 30) * 30,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
           },
+          x: {
+            grid: {
+              display: false
+            }
+          }
         },
         plugins: {
           datalabels: {

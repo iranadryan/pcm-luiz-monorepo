@@ -36,7 +36,7 @@ ChartJS.register(
   Tooltip,
   Legend,
   ArcElement,
-  ChartDataLabels
+  ChartDataLabels,
 );
 
 export function App() {
@@ -46,9 +46,9 @@ export function App() {
     links: [
       httpBatchLink({
         // url: 'https://pcm-luiz-api.onrender.com/trpc'
-        // url: 'http://localhost:3001/trpc'
+        url: 'http://localhost:3001/trpc'
         // url: 'http://3.137.211.109/trpc'
-        url: 'https://api.sistemapcm.com/trpc'
+        // url: 'https://api.sistemapcm.com/trpc'
       })
     ]
   }));

@@ -2,6 +2,8 @@ import styled from 'styled-components';
 
 export const Container = styled.aside`
   width: 280px;
+  min-width: 280px;
+  max-width: 280px;
   background: #E9F2EC;
   border: 1px solid #BDD8C7;
   box-shadow: 0px 2px 6px rgba(0, 60, 35, 0.08), 0px 1px 3px rgba(0, 0, 0, 0.08);
@@ -80,7 +82,7 @@ export const Container = styled.aside`
           border-left: 1px solid #91bea3;
           border-bottom: 1px solid #91bea3;
           border-bottom-left-radius: 8px;
-          width: 12px;
+          width: 11px;
           height: 20px;
         }
 

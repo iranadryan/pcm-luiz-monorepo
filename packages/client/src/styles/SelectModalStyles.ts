@@ -15,6 +15,10 @@ export const SelectModalStyles = createGlobalStyle`
     min-width: calc(720px - 32px) !important;
     max-width: calc(720px - 32px) !important;
 
+    @media (min-width: 768px) {
+      left: calc(50% + 140px) !important;
+    }
+
     &.modal {
       width: calc(720px - 80px) !important;
       min-width: calc(720px - 80px) !important;

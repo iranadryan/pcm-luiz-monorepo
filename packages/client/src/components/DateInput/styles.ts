@@ -1,5 +1,5 @@
 import InputMask from 'react-input-mask';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -11,7 +11,11 @@ export const Wrapper = styled.div`
   }
 `;
 
-export const StyledInput = styled(InputMask)`
+interface StyledInputProps {
+  secondary: boolean;
+}
+
+export const StyledInput = styled(InputMask)<StyledInputProps>`
   height: 48px;
   width: 100%;
   background: #E9F2EC;
@@ -32,4 +36,11 @@ export const StyledInput = styled(InputMask)`
   &::placeholder {
     color: #7BB292;
   }
+
+  ${({ secondary }) => secondary && css`
+    height: 36px;
+    width: 120px;
+    padding: 0 12px;
+    font-size: 14px;
+  `}
 `;

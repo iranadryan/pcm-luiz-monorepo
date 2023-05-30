@@ -8,12 +8,15 @@ export function OpenClosedLastThree() {
       month: string;
       totalOpen: number;
       totalClosed: number;
+      totalLaunched: number;
     }[]
   >([]);
   const highestValueLastThree = useMemo(
     () =>
       Math.max(
-        ...openClosedLastThree.map((item) => item.totalOpen + item.totalClosed)
+        ...openClosedLastThree.map((item) => (
+          item.totalOpen + item.totalClosed + item.totalLaunched
+        ))
       ),
     [openClosedLastThree]
   );
@@ -32,30 +35,31 @@ export function OpenClosedLastThree() {
 
   return (
     <div className="chart-dashboard">
-      <h2>RELAÇÃO ABERTO X FECHADO ÚLTIMOS 3 MESES</h2>
+      <h2>RELAÇÃO ÚLTIMOS 3 MESES</h2>
       <div className="container">
         <BarChart
           labels={openClosedLastThree.map((item) => item.month)}
           highestValue={highestValueLastThree}
           datasets={[
             {
-              data: openClosedLastThree.map(
-                (item) => item.totalClosed + item.totalOpen
-              ),
-              backgroundColor: '#1abc9c',
-              borderColor: '#16a085',
-              label: 'Total',
-              borderWidth: 2,
-              borderRadius: 4,
+              data: openClosedLastThree.map((item) => item.totalOpen),
+              backgroundColor: '#f1c40f',
+              label: 'Abertas',
+              borderRadius: 6,
               barPercentage: 0.8,
             },
             {
               data: openClosedLastThree.map((item) => item.totalClosed),
-              backgroundColor: '#3498db',
-              borderColor: '#2980b9',
+              backgroundColor: '#1abc9c',
               label: 'Fechados',
-              borderWidth: 2,
-              borderRadius: 4,
+              borderRadius: 6,
+              barPercentage: 0.8,
+            },
+            {
+              data: openClosedLastThree.map((item) => item.totalLaunched),
+              backgroundColor: '#3498db',
+              label: 'Lançados',
+              borderRadius: 6,
               barPercentage: 0.8,
             },
           ]}

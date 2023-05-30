@@ -16,7 +16,7 @@ export const Container = styled.div<ContainerProps>`
     flex-direction: column;
     gap: 16px;
 
-    div:last-child {
+    > div:last-child {
       margin-bottom: 4px;
     }
   }
@@ -48,8 +48,9 @@ export const Container = styled.div<ContainerProps>`
       }
 
       strong {
-        font-size: 32px;
+        font-size: 28px;
         font-weight: 600;
+        margin-top: 2px;
       }
     }
   }
@@ -60,6 +61,20 @@ export const Container = styled.div<ContainerProps>`
       font-weight: 600;
     }
 
+    header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+
+      .range-input {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+      }
+    }
+
+
     .container {
       margin-top: 8px;
       padding: 12px;
@@ -69,6 +84,30 @@ export const Container = styled.div<ContainerProps>`
       box-shadow: 0px 4px 6px rgba(0, 60, 35, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.12);
       width: 100%;
       min-height: 320px;
+      position: relative;
+
+      .center-content {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        strong {
+          font-size: 40px;
+          font-size: 600;
+          line-height: 120%;
+        }
+
+        span {
+          font-size: 14px;
+          font-weight: 500;
+          line-height: 120%;
+          display: block;
+        }
+      }
 
       .chart-container {
         height: 320px;

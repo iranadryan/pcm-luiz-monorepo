@@ -1,7 +1,7 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Dropdown } from 'primereact/dropdown';
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<StyledSelectProps>`
   width: 100%;
 
   label {
@@ -9,9 +9,17 @@ export const Wrapper = styled.div`
     font-size: 12px;
     color: #48AF7A;
   }
+
+  ${({ secondary }) => secondary && css`
+    width: 280px;
+  `}
 `;
 
-export const StyledSelect = styled(Dropdown)`
+interface StyledSelectProps {
+  secondary: boolean;
+}
+
+export const StyledSelect = styled(Dropdown)<StyledSelectProps>`
   width: 100% !important;
   height: 48px !important;
   background: #E9F2EC !important;
@@ -47,4 +55,11 @@ export const StyledSelect = styled(Dropdown)`
       font-weight: 700;
     }
   }
+
+  ${({ secondary }) => secondary && css`
+    height: 36px !important;
+    width: 280px !important;
+    padding: 0 12px !important;
+    font-size: 14px !important;
+  `}
 `;

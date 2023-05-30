@@ -87,7 +87,7 @@ export function ViewServiceOrder() {
               {`${moment(serviceOrder?.startDate).add(3, 'h').format('DD/MM/YYYY')} - ${moment(serviceOrder?.startTime).format('HH:mm')}`}
             </span>
           </div>
-          {serviceOrder?.status === 'CLOSED' && (
+          {serviceOrder?.endDate && (
             <div>
               <strong>Final</strong>
               <span>
@@ -166,7 +166,7 @@ export function ViewServiceOrder() {
         )}
       </main>
       <footer>
-        {serviceOrder?.status === 'CLOSED' ? (
+        {serviceOrder?.endDate ? (
           <>
             <Button onClick={exportServiceOrder}>
               <Export size={20} color="#FFFFFF" weight="bold" />
@@ -180,7 +180,7 @@ export function ViewServiceOrder() {
         ) : (
           <Button onClick={() => setCloseOrderModalIsVisible(true)}>
             <Check size={20} color="#FFFFFF" weight="bold" />
-            Fechar
+          Fechar
           </Button>
         )}
       </footer>

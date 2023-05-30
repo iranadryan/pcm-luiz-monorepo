@@ -5,18 +5,21 @@ interface DateInputProps {
   placeholder?: string;
   value: string;
   onChange: (value: string) => void;
+  secondary: boolean;
 }
 
 export function DateInput({
   label,
   placeholder,
   value,
-  onChange
+  onChange,
+  secondary = false
 }: DateInputProps) {
   return (
     <Wrapper>
       {label && <label>{label}</label>}
       <StyledInput
+        secondary={secondary}
         mask="99/99/9999"
         placeholder={placeholder}
         value={value}

@@ -14,6 +14,7 @@ interface SelectProps {
   isModal?: boolean;
   filter?: boolean;
   emptyMessage?: string;
+  secondary?: boolean;
 }
 
 export function Select({
@@ -24,12 +25,14 @@ export function Select({
   onSelect,
   isModal = false,
   filter = false,
-  emptyMessage = 'Nenhuma opção encontrada'
+  emptyMessage = 'Nenhuma opção encontrada',
+  secondary = false,
 }: SelectProps) {
   return (
-    <Wrapper>
+    <Wrapper secondary={secondary}>
       {label && <label>{label}</label>}
       <StyledSelect
+        secondary={secondary}
         options={options}
         placeholder={placeholder}
         value={selected}
