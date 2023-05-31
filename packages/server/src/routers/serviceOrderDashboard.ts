@@ -305,6 +305,8 @@ export const serviceOrderDashboardRouter = router({
         order by p."name"
       `);
 
+      console.log(services);
+
       if (services.length === 0) {
         return {
           weekTotal: {
@@ -316,6 +318,8 @@ export const serviceOrderDashboardRouter = router({
       }
 
       const serviceHours = getServiceHoursByMechanic(services);
+
+      console.log(serviceHours);
 
       return {
         weekTotal: serviceHours[0]
