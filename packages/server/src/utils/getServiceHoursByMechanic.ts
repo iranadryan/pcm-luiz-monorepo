@@ -19,6 +19,8 @@ export function getServiceHoursByMechanic(services: serviceType[]) {
     const startDate = moment(service.startdate).subtract(3, 'h');
     const endDate = moment(service.enddate).subtract(3, 'h');
 
+    console.log({ startDate, endDate });
+
     if (startDate.isSame(endDate, 'day')) {
       const lunchStart = startDate
         .clone()

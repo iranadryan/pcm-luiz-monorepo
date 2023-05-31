@@ -305,8 +305,6 @@ export const serviceOrderDashboardRouter = router({
         order by p."name"
       `);
 
-      console.log(services);
-
       if (services.length === 0) {
         return {
           weekTotal: {
