@@ -4,6 +4,7 @@ import { formatHours } from './formatHours';
 import { getDaysBetweenDates } from './getDaysBetweenDates';
 
 type serviceType = {
+  number: number;
   name: string;
   startdate: Date;
   enddate: Date;
@@ -20,7 +21,6 @@ export function getServiceHoursByMechanic(services: serviceType[]) {
     const endDate = moment(service.enddate).subtract(3, 'h');
 
     if (startDate.isSame(endDate, 'day')) {
-      console.log('isSame day: true');
       const lunchStart = startDate
         .clone()
         .startOf('day')
@@ -43,8 +43,14 @@ export function getServiceHoursByMechanic(services: serviceType[]) {
         mechanic: service.name,
         hours: serviceHours,
       });
+      console.log({
+        number: service.number,
+        startDate: startDate,
+        endDate: endDate,
+        sameDay: true,
+        hours: serviceHours,
+      });
     } else {
-      console.log('isSame day: false');
       const days = differenceInBusinessDays(
         endDate.toDate(),
         startDate.clone().add(1, 'd').toDate()
@@ -112,6 +118,13 @@ export function getServiceHoursByMechanic(services: serviceType[]) {
 
       servicesHours.push({
         mechanic: service.name,
+        hours: serviceHours,
+      });
+      console.log({
+        number: service.number,
+        startDate: startDate,
+        endDate: endDate,
+        sameDay: false,
         hours: serviceHours,
       });
     }

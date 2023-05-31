@@ -286,12 +286,14 @@ export const serviceOrderDashboardRouter = router({
 
       const services = await prisma.$queryRawUnsafe<
         Array<{
+          number: number;
           name: string;
           startdate: Date;
           enddate: Date;
         }>
       >(`
         select
+          so."number",
           p."name",
           so."startDate" + sos."startTime" as startDate,
           sos."endDate" + sos."endTime" as endDate
@@ -316,8 +318,6 @@ export const serviceOrderDashboardRouter = router({
       }
 
       const serviceHours = getServiceHoursByMechanic(services);
-
-      console.log(serviceHours);
 
       return {
         weekTotal: serviceHours[0]
