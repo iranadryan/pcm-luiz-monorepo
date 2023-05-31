@@ -19,9 +19,8 @@ export function getServiceHoursByMechanic(services: serviceType[]) {
     const startDate = moment(service.startdate).subtract(3, 'h');
     const endDate = moment(service.enddate).subtract(3, 'h');
 
-    console.log({ startDate, endDate });
-
     if (startDate.isSame(endDate, 'day')) {
+      console.log('isSame day: true');
       const lunchStart = startDate
         .clone()
         .startOf('day')
@@ -45,6 +44,7 @@ export function getServiceHoursByMechanic(services: serviceType[]) {
         hours: serviceHours,
       });
     } else {
+      console.log('isSame day: false');
       const days = differenceInBusinessDays(
         endDate.toDate(),
         startDate.clone().add(1, 'd').toDate()
