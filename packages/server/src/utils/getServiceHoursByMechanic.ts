@@ -35,19 +35,23 @@ export function getServiceHoursByMechanic(services: serviceType[]) {
         (endDate.diff(startDate, 'm') / 60).toFixed(2)
       );
 
+      if (service.number === 5528) {
+        console.log({
+          number: service.number,
+          startDate,
+          endDate,
+          lunchStart,
+          lunchEnd,
+          hadLunch: startDate.isBefore(lunchStart) && endDate.isAfter(lunchEnd)
+        });
+      }
+
       if (startDate.isBefore(lunchStart) && endDate.isAfter(lunchEnd)) {
         serviceHours -= 1.5;
       }
 
       servicesHours.push({
         mechanic: service.name,
-        hours: serviceHours,
-      });
-      console.log({
-        number: service.number,
-        startDate: startDate,
-        endDate: endDate,
-        sameDay: true,
         hours: serviceHours,
       });
     } else {
@@ -118,13 +122,6 @@ export function getServiceHoursByMechanic(services: serviceType[]) {
 
       servicesHours.push({
         mechanic: service.name,
-        hours: serviceHours,
-      });
-      console.log({
-        number: service.number,
-        startDate: startDate,
-        endDate: endDate,
-        sameDay: false,
         hours: serviceHours,
       });
     }
