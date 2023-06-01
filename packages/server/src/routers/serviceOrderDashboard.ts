@@ -300,10 +300,10 @@ export const serviceOrderDashboardRouter = router({
         from service_orders_services sos
         inner join service_orders so on so.id = sos."serviceOrderId"
         inner join people p on p.id = sos."executorId"
-        where sos."isEnded" = true
-        and sos."executorId" = '${input}'
+        where sos."executorId" = '${input}'
         and so."startDate" >= '${monday.format('YYYY-MM-DD')}'
         and sos."endDate" <= '${saturday.format('YYYY-MM-DD')}'
+        and sos."endTime" notnull
         order by p."name"
       `);
 
