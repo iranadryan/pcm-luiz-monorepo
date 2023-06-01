@@ -24,12 +24,10 @@ export function getServiceHoursByMechanic(services: serviceType[]) {
       const lunchStart = startDate
         .clone()
         .startOf('day')
-        .subtract(3, 'h')
         .add(12, 'h');
       const lunchEnd = startDate
         .clone()
         .startOf('day')
-        .subtract(3, 'h')
         .add(13.5, 'h');
       let serviceHours = Number(
         (endDate.diff(startDate, 'm') / 60).toFixed(2)
