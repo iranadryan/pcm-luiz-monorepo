@@ -28,6 +28,15 @@ export function ViewServiceOrder() {
 
   const { data: serviceOrder, refetch } = trpc.serviceOrder.get.useQuery(id);
   const serviceOrderMutation = trpc.serviceOrder.export.useMutation();
+  const serviceOrderCanClose = serviceOrder?.ServiceOrderService
+    ? serviceOrder.ServiceOrderService.reduce((acc, curr) => {
+      if (!curr.endDate || !curr.endTime) {
+        return false;
+      }
+
+      return true;
+    }, true)
+    : true;
 
   async function exportServiceOrder() {
     setIsLoading(true);
@@ -132,11 +141,13 @@ export function ViewServiceOrder() {
                     <strong>Início</strong>
                     <span>{moment(service.startTime).format('HH:mm')}</span>
                   </div>
-                  <div>
-                    <strong>Final</strong>
-                    <span>{moment(service.endDate).add(3, 'h').format('DD/MM/YYYY')} - {moment(service.endTime).format('HH:mm')}</span>
-                  </div>
-                  <div className="stretch">
+                  {service.endDate && service.endTime && (
+                    <div>
+                      <strong>Final</strong>
+                      <span>{moment(service.endDate).add(3, 'h').format('DD/MM/YYYY')} - {moment(service.endTime).format('HH:mm')}</span>
+                    </div>
+                  )}
+                  <div className={service.endDate && service.endTime ? 'stretch' : ''}>
                     <strong>Executante</strong>
                     <span>{service.executor.name}</span>
                   </div>
@@ -177,12 +188,13 @@ export function ViewServiceOrder() {
               {serviceOrder?.number ? 'Alterar Número' : 'Inserir Número'}
             </Button>
           </>
-        ) : (
+        ) : serviceOrderCanClose && (
           <Button onClick={() => setCloseOrderModalIsVisible(true)}>
             <Check size={20} color="#FFFFFF" weight="bold" />
-          Fechar
+            Fechar
           </Button>
-        )}
+        )
+        }
       </footer>
     </Container>
   );

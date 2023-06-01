@@ -61,8 +61,8 @@ export function ServiceStep({
         (option) => option.value === selectedService
       )?.label || '',
       startTime: data.startTime,
-      endTime: data.startTime,
-      endDate: data.startDate,
+      endTime: '',
+      endDate: '',
       executorId: null,
       description: '',
       isEnded: false,
@@ -240,6 +240,7 @@ export function ServiceStep({
               />
               <TimeInput
                 label="Hora Final"
+                placeholder="Hora Final"
                 value={service.endTime}
                 onChange={(value) => {
                   handleChangeServiceData(service.id, 'endTime', value);
@@ -247,6 +248,7 @@ export function ServiceStep({
               />
               <DateInput
                 label="Data Final"
+                placeholder="Data Final"
                 value={service.endDate}
                 onChange={(value) => {
                   handleChangeServiceData(service.id, 'endDate', value);

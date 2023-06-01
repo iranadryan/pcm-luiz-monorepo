@@ -54,7 +54,7 @@ export function TotalWorkHours() {
   return (
     <div className="chart-dashboard">
       <header>
-        <h2>TOTAL DE SERVIÇOS POR SERVIÇO</h2>
+        <h2>HORAS TRABALHADAS NA SEMANA</h2>
         <Select
           options={mechanicOptions}
           selected={selectedMechanic}
@@ -68,6 +68,9 @@ export function TotalWorkHours() {
           <span>DA META SEMANAL</span>
         </div>
         <Doughnut
+          style={{
+            zIndex:10
+          }}
           data={{
             labels: ['Realizadas', 'Restantes'],
             datasets: [{

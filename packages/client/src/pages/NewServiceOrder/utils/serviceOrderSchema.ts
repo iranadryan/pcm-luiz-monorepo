@@ -14,12 +14,8 @@ const serviceSchema = z.object({
   startTime: z.string().nonempty({
     message: 'Hora Inicial é obrigatório'
   }),
-  endTime: z.string().nonempty({
-    message: 'Hora Final é obrigatório'
-  }),
-  endDate: z.string().nonempty({
-    message: 'Data Final é obrigatório'
-  }),
+  endTime: z.string(),
+  endDate: z.string(),
   executorId: z.string({
     invalid_type_error: 'Executante é obrigatório'
   }).uuid(),

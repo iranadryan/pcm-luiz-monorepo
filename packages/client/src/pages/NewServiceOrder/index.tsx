@@ -135,7 +135,7 @@ export function NewServiceOrder() {
 
     const { data } = validatedFormData;
     const parsedFormData: ServiceOrderFormData = {
-      startDate: moment(data.startDate, 'DDMMYYYY').utc().toDate(),
+      startDate: moment(data.startDate, 'DDMMYYYY').toDate(),
       startTime: moment(data.startTime, 'HHmm').toDate(),
       truckId: data.truckId,
       driverId: data.driverId,
@@ -145,8 +145,8 @@ export function NewServiceOrder() {
         serviceId: service.serviceId,
         executorId: service.executorId,
         startTime: moment(service.startTime, 'HHmm').toDate(),
-        endDate: moment(service.endDate, 'DDMMYYYY').toDate(),
-        endTime: moment(service.endTime, 'HHmm').toDate(),
+        endDate: service.endDate ? moment(service.endDate, 'DDMMYYYY').toDate() : undefined,
+        endTime: service.endTime ? moment(service.endTime, 'HHmm').toDate() : undefined,
         description: service.description === '' ? undefined : service.description,
         isEnded: service.isEnded,
         materials: service.materials.map((material) => ({

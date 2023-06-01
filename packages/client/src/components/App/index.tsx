@@ -27,6 +27,7 @@ import {
   ArcElement,
 } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { trpcUrl } from '../../lib/trpcClient';
 
 ChartJS.register(
   CategoryScale,
@@ -45,10 +46,7 @@ export function App() {
     transformer: SuperJSON,
     links: [
       httpBatchLink({
-        // url: 'https://pcm-luiz-api.onrender.com/trpc'
-        // url: 'http://localhost:3001/trpc'
-        // url: 'http://3.137.211.109/trpc'
-        url: 'https://api.sistemapcm.com/trpc'
+        url: trpcUrl
       })
     ]
   }));
