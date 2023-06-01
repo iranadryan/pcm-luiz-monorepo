@@ -73,14 +73,12 @@ export const createInputSchemaValidation = z.object({
     }),
 
     endDate: z.date({
-      required_error: 'End date is required',
       invalid_type_error: 'End date must be a date'
-    }),
+    }).optional(),
 
     endTime: z.date({
-      required_error: 'End time is required',
       invalid_type_error: 'End time must be a date'
-    }),
+    }).optional(),
 
     description: z.string({
       invalid_type_error: 'Description must be a string'
@@ -190,14 +188,12 @@ export const updateInputSchemaValidation = z.object({
     }),
 
     endDate: z.date({
-      required_error: 'End date is required',
       invalid_type_error: 'End date must be a date'
-    }),
+    }).optional(),
 
     endTime: z.date({
-      required_error: 'End time is required',
       invalid_type_error: 'End time must be a date'
-    }),
+    }).optional(),
 
     description: z.string({
       invalid_type_error: 'description must be a string'

@@ -17,8 +17,8 @@ export function getServiceHoursByMechanic(services: serviceType[]) {
   }[] = [];
 
   for (const service of services) {
-    const startDate = moment(service.startdate).subtract(3, 'h');
-    const endDate = moment(service.enddate).subtract(3, 'h');
+    const startDate = moment.utc(service.startdate).subtract(3, 'h');
+    const endDate = moment.utc(service.enddate).subtract(3, 'h');
 
     if (startDate.isSame(endDate, 'day')) {
       const lunchStart = startDate
@@ -32,17 +32,6 @@ export function getServiceHoursByMechanic(services: serviceType[]) {
       let serviceHours = Number(
         (endDate.diff(startDate, 'm') / 60).toFixed(2)
       );
-
-      if (service.number === 5538) {
-        console.log({
-          number: service.number,
-          startDate,
-          endDate,
-          lunchStart,
-          lunchEnd,
-          hadLunch: startDate.isBefore(lunchStart) && endDate.isAfter(lunchEnd)
-        });
-      }
 
       if (startDate.isBefore(lunchStart) && endDate.isAfter(lunchEnd)) {
         serviceHours -= 1.5;
