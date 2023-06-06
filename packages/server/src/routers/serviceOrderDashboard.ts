@@ -282,7 +282,7 @@ export const serviceOrderDashboardRouter = router({
     .query(async ({ input }) => {
       const now = moment();
       const monday = now.clone().weekday(1);
-      const saturday = now.clone().weekday(6);
+      const sunday = now.clone().weekday(7);
 
       const services = await prisma.$queryRawUnsafe<
         Array<{
@@ -301,8 +301,8 @@ export const serviceOrderDashboardRouter = router({
         inner join service_orders so on so.id = sos."serviceOrderId"
         inner join people p on p.id = sos."executorId"
         where sos."executorId" = '${input}'
-        and so."startDate" >= '${monday.format('YYYY-MM-DD')}'
-        and sos."endDate" <= '${saturday.format('YYYY-MM-DD')}'
+        and so."startDate" between '${monday.format('YYYY-MM-DD')}' and '${sunday.format('YYYY-MM-DD')}'
+        and sos."endDate" between '${monday.format('YYYY-MM-DD')}' and '${sunday.format('YYYY-MM-DD')}'
         and sos."endTime" notnull
         order by p."name"
       `);
