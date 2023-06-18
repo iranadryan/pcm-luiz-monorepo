@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const serviceOrderOutputSchemaValidation = z.object({
   id: z.string(),
   number: z.number().nullable(),
-  status: z.enum(['OPEN', 'CLOSED', 'LAUNCHED']),
+  status: z.enum(['OPEN', 'CLOSED', 'LAUNCHED', 'SCHEDULED']),
   startDate: z.date(),
   endDate: z.date().nullable(),
   truck: z.object({
@@ -65,6 +65,11 @@ export const createInputSchemaValidation = z.object({
       invalid_type_error: 'Executor ID must be a string'
     }).uuid({
       message: 'Executor ID must be a uuid'
+    }),
+
+    startDate: z.date({
+      required_error: 'Start date is required',
+      invalid_type_error: 'Start date must be a date'
     }),
 
     startTime: z.date({
@@ -180,6 +185,11 @@ export const updateInputSchemaValidation = z.object({
       invalid_type_error: 'Executor ID must be a string'
     }).uuid({
       message: 'Executor ID must be a uuid'
+    }),
+
+    startDate: z.date({
+      required_error: 'Start date is required',
+      invalid_type_error: 'Start date must be a date'
     }),
 
     startTime: z.date({

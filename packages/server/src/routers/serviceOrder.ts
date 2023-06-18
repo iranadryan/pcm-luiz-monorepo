@@ -73,6 +73,7 @@ export const serviceOrderRouter = router({
             select: {
               id: true,
               description: true,
+              startDate: true,
               startTime: true,
               endDate: true,
               endTime: true,
@@ -118,6 +119,13 @@ export const serviceOrderRouter = router({
     .input(createInputSchemaValidation)
     .mutation(async ({ input }) => {
       const { services } = input;
+      const isScheduled = services.reduce((value, curr) => {
+        if (curr.executorId === 'c5bcdd68-3c66-4bb9-b3fe-20d3316ae0d5') {
+          return true;
+        }
+
+        return false;
+      }, false);
       const serviceOrderInput = {
         startDate: input.startDate,
         startTime: input.startTime,
@@ -127,7 +135,10 @@ export const serviceOrderRouter = router({
         observation: input.observation,
       };
       const serviceOrder = await prisma.serviceOrder.create({
-        data: serviceOrderInput
+        data: {
+          ...serviceOrderInput,
+          status: isScheduled ? 'SCHEDULED' : undefined
+        }
       });
 
       for (const service of services) {
@@ -135,6 +146,7 @@ export const serviceOrderRouter = router({
         const serviceOrderServiceInput = {
           serviceId: service.serviceId,
           executorId: service.executorId,
+          startDate: service.startDate,
           startTime: service.startTime,
           endDate: service.endDate,
           endTime: service.endTime,
@@ -181,6 +193,7 @@ export const serviceOrderRouter = router({
           ServiceOrderService: {
             select: {
               id: true,
+              startDate: true,
               startTime: true,
               endDate: true,
               endTime: true,
@@ -238,11 +251,35 @@ export const serviceOrderRouter = router({
         odometer: input.odometer,
         observation: input.observation,
       };
+
+      const serviceOrderExists = await prisma.serviceOrder.findUnique({
+        where: {
+          id: serviceOrderId
+        }
+      });
+
+      if (!serviceOrderExists) {
+        throw new Error(`Service order does not exists: ${input}`);
+      }
+
+      const isScheduled = serviceOrderExists.status !== 'SCHEDULED'
+        ? false
+        : services.reduce((value, curr) => {
+          if (curr.executorId === 'c5bcdd68-3c66-4bb9-b3fe-20d3316ae0d5' && !curr.deleted) {
+            return true;
+          }
+
+          return false;
+        }, false);
+
       const serviceOrder = await prisma.serviceOrder.update({
         where: {
           id: serviceOrderId,
         },
-        data: serviceOrderInput
+        data: {
+          ...serviceOrderInput,
+          status: isScheduled ? 'SCHEDULED' : serviceOrderExists.status === 'SCHEDULED' ? 'OPEN' : serviceOrderExists.status
+        }
       });
 
       for (const service of services) {
@@ -251,6 +288,7 @@ export const serviceOrderRouter = router({
         const serviceOrderServiceInput = {
           serviceId: service.serviceId,
           executorId: service.executorId,
+          startDate: service.startDate,
           startTime: service.startTime,
           endDate: service.endDate,
           endTime: service.endTime,

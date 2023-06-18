@@ -76,6 +76,7 @@ model ServiceOrder {
 }
 
 enum ServiceOrderStatus {
+  SCHEDULED
   OPEN
   CLOSED
   LAUNCHED
@@ -87,9 +88,10 @@ model ServiceOrderService {
   serviceId                   String
   executor                    Person                        @relation(fields: [executorId], references: [id])
   executorId                  String
-  startTime                   DateTime                      @db.Time()
-  endDate                     DateTime?                      @db.Date
-  endTime                     DateTime?                      @db.Time()
+  startDate                   DateTime?                     @db.Date
+  startTime                   DateTime?                     @db.Time()
+  endDate                     DateTime?                     @db.Date
+  endTime                     DateTime?                     @db.Time()
   description                 String?
   isEnded                     Boolean                       @default(false)
   serviceOrder                ServiceOrder                  @relation(fields: [serviceOrderId], references: [id], onDelete: Cascade, onUpdate: Cascade)

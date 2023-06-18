@@ -1,5 +1,7 @@
 import moment from 'moment';
 import {
+  differenceInBusinessDays,
+  differenceInMinutes,
   eachMonthOfInterval,
 } from 'date-fns';
 import { prisma } from '../lib/prisma';
@@ -11,6 +13,14 @@ import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { takeTwoNames } from '../utils/takeTwoNames';
 import { getServiceHoursByMechanic } from '../utils/getServiceHoursByMechanic';
+import { getDaysBetweenDates } from '../utils/getDaysBetweenDates';
+
+export type serviceType = {
+  id: string;
+  name: string;
+  startdate: Date;
+  enddate: Date;
+}
 
 export const serviceOrderDashboardRouter = router({
   openClosedTotal: publicProcedure
@@ -53,6 +63,7 @@ export const serviceOrderDashboardRouter = router({
         openTotal: openClosedTotal.find((item) => item.status === 'OPEN')?._count._all || 0,
         closedTotal: openClosedTotal.find((item) => item.status === 'CLOSED')?._count._all || 0,
         launchedTotal: openClosedTotal.find((item) => item.status === 'LAUNCHED')?._count._all || 0,
+        scheduledTotal: openClosedTotal.find((item) => item.status === 'SCHEDULED')?._count._all || 0,
       };
     }),
   openClosedTotalLastThreeMonths: publicProcedure
@@ -173,9 +184,8 @@ export const serviceOrderDashboardRouter = router({
           s."name" as service
         from service_orders_services sos
         left join services s on s.id = sos."serviceId"
-        inner join service_orders so on sos."serviceOrderId" = so.id
         where 1 = 1
-        ${input?.startDate ? `and so."startDate" >= '${moment(input.startDate).format('YYYY-MM-DD')}'` : ''}
+        ${input?.startDate ? `and sos."startDate" >= '${moment(input.startDate).format('YYYY-MM-DD')}'` : ''}
         ${input?.endDate ? `and sos."endDate" <= '${moment(input.endDate).format('YYYY-MM-DD')}'` : ''}
         group by service
         order by total desc
@@ -256,9 +266,8 @@ export const serviceOrderDashboardRouter = router({
           p."name" as mechanic
         from service_orders_services sos
         left join  people p on p.id = sos."executorId"
-        inner join service_orders so on sos."serviceOrderId" = so.id
         where 1 = 1
-        ${input?.startDate ? `and so."startDate" >= '${moment(input.startDate).format('YYYY-MM-DD')}'` : ''}
+        ${input?.startDate ? `and sos."startDate" >= '${moment(input.startDate).format('YYYY-MM-DD')}'` : ''}
         ${input?.endDate ? `and sos."endDate" <= '${moment(input.endDate).format('YYYY-MM-DD')}'` : ''}
         group by mechanic
         order by total desc
@@ -278,34 +287,38 @@ export const serviceOrderDashboardRouter = router({
       }));
     }),
   totalServiceHoursByMechanic: publicProcedure
-    .input(z.string().uuid())
+    .input(z.object({
+      mechanicId: z.string().uuid(),
+      startDate: z.date(),
+      endDate: z.date()
+    }))
     .query(async ({ input }) => {
-      const now = moment();
-      const monday = now.clone().weekday(1);
-      const sunday = now.clone().weekday(7);
-
-      const services = await prisma.$queryRawUnsafe<
-        Array<{
-          number: number;
-          name: string;
-          startdate: Date;
-          enddate: Date;
-        }>
-      >(`
+      const services = await prisma.$queryRawUnsafe<serviceType[]>(`
         select
-          so."number",
+          sos."id",
           p."name",
-          so."startDate" + sos."startTime" as startDate,
+          sos."startDate" + sos."startTime" as startDate,
           sos."endDate" + sos."endTime" as endDate
         from service_orders_services sos
-        inner join service_orders so on so.id = sos."serviceOrderId"
         inner join people p on p.id = sos."executorId"
-        where sos."executorId" = '${input}'
-        and so."startDate" between '${monday.format('YYYY-MM-DD')}' and '${sunday.format('YYYY-MM-DD')}'
-        and sos."endDate" between '${monday.format('YYYY-MM-DD')}' and '${sunday.format('YYYY-MM-DD')}'
+        where sos."executorId" = '${input.mechanicId}'
+        and sos."startDate" between '${moment(input.startDate).format('YYYY-MM-DD')}' and '${moment(input.endDate).format('YYYY-MM-DD')}'
+        and sos."endDate" between '${moment(input.startDate).format('YYYY-MM-DD')}' and '${moment(input.endDate).format('YYYY-MM-DD')}'
         and sos."endTime" notnull
-        order by p."name"
+        order by sos."startDate" + sos."startTime"
       `);
+
+      const businessDays = differenceInBusinessDays(
+        input.endDate,
+        input.startDate,
+      );
+      const saturdays = getDaysBetweenDates(
+        input.startDate,
+        input.endDate,
+        6
+      ).length;
+
+      const goalHours = (businessDays * 8) + (saturdays * 4);
 
       if (services.length === 0) {
         return {
@@ -313,14 +326,63 @@ export const serviceOrderDashboardRouter = router({
             mechanic: '',
             hours: 0,
             hoursFormatted: '00:00'
-          }
+          },
+          goalHours
         };
       }
 
-      const serviceHours = getServiceHoursByMechanic(services);
+      let servicesNotDuplicated: serviceType[] = [...services];
+      const deletedArray: serviceType[] = [];
+
+      servicesNotDuplicated.forEach((currService) => {
+        if (deletedArray.findIndex(
+          (item) => item.id === currService.id
+        ) !== -1) {
+          return;
+        }
+
+        servicesNotDuplicated.forEach((service) => {
+          if (service.id === currService.id) {
+            return;
+          }
+
+          const startDateDiff = differenceInMinutes(
+            service.startdate,
+            currService.startdate
+          );
+          const startEndDateDiff = differenceInMinutes(
+            service.enddate,
+            currService.startdate,
+          );
+          const endDateDiff = differenceInMinutes(
+            service.enddate,
+            currService.enddate,
+          );
+
+          if (startDateDiff >= 0 && endDateDiff <= 0) {
+            deletedArray.push(service);
+            return servicesNotDuplicated = servicesNotDuplicated.filter(
+              (i) => i.id !== service.id
+            );
+          }
+
+          if (startDateDiff < 0 && startEndDateDiff > 0) {
+            const index = servicesNotDuplicated.findIndex(
+              (i) => i.id === service.id
+            );
+
+            if (index !== -1) {
+              servicesNotDuplicated[index].enddate = currService.startdate;
+            }
+          }
+        });
+      });
+
+      const serviceHours = getServiceHoursByMechanic(servicesNotDuplicated);
 
       return {
-        weekTotal: serviceHours[0]
+        weekTotal: serviceHours[0],
+        goalHours
       };
     }),
   averageTimeBetweenMaintenance: publicProcedure.query(async () => {

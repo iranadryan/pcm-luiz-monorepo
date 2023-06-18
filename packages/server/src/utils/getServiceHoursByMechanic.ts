@@ -2,13 +2,7 @@ import { differenceInBusinessDays, isWeekend } from 'date-fns';
 import moment from 'moment';
 import { formatHours } from './formatHours';
 import { getDaysBetweenDates } from './getDaysBetweenDates';
-
-type serviceType = {
-  number: number;
-  name: string;
-  startdate: Date;
-  enddate: Date;
-}
+import { serviceType } from '../routers/serviceOrderDashboard';
 
 export function getServiceHoursByMechanic(services: serviceType[]) {
   const servicesHours: {
