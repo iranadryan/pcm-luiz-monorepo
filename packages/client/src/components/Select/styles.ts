@@ -11,7 +11,7 @@ export const Wrapper = styled.div<StyledSelectProps>`
   }
 
   ${({ secondary }) => secondary && css`
-    width: 280px;
+    width: 200px;
   `}
 `;
 
@@ -58,7 +58,7 @@ export const StyledSelect = styled(Dropdown)<StyledSelectProps>`
 
   ${({ secondary }) => secondary && css`
     height: 36px !important;
-    width: 280px !important;
+    width: 200px !important;
     padding: 0 12px !important;
     font-size: 14px !important;
   `}

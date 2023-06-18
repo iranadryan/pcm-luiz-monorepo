@@ -36,7 +36,7 @@ export const Container = styled.section`
       color: #FFFFFF;
       font-size: 10px;
       margin-left: 4px;
-      line-height: 12px;
+      line-height: 100%;
 
       &.open {
         background: #F37324;
@@ -44,6 +44,10 @@ export const Container = styled.section`
 
       &.launched {
         background: #3498db;
+      }
+
+      &.scheduled {
+        background: #f1c40f;
       }
     }
 

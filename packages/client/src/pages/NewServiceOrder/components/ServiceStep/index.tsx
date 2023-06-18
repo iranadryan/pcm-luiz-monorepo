@@ -58,6 +58,7 @@ export function ServiceStep({
       name: serviceOptions.find(
         (option) => option.value === selectedService
       )?.label || '',
+      startDate: data.startDate,
       startTime: data.startTime,
       endTime: '',
       endDate: '',
@@ -193,19 +194,19 @@ export function ServiceStep({
               </button>
             </header>
             <div className="card">
+              <DateInput
+                label="Data Inicial"
+                placeholder="Data Inicial"
+                value={service.startDate}
+                onChange={(value) => {
+                  handleChangeServiceData(service.id, 'startDate', value);
+                }}
+              />
               <TimeInput
                 label="Hora Inicial"
                 value={service.startTime}
                 onChange={(value) => {
                   handleChangeServiceData(service.id, 'startTime', value);
-                }}
-              />
-              <TimeInput
-                label="Hora Final"
-                placeholder="Hora Final"
-                value={service.endTime}
-                onChange={(value) => {
-                  handleChangeServiceData(service.id, 'endTime', value);
                 }}
               />
               <DateInput
@@ -216,17 +217,27 @@ export function ServiceStep({
                   handleChangeServiceData(service.id, 'endDate', value);
                 }}
               />
-              <FormGroup error={getErrorMessage(`services.${index}.executorId`)}>
-                <Select
-                  label="Executante"
-                  placeholder="Selecione"
-                  options={executorOptions}
-                  selected={service.executorId}
-                  onSelect={(value) => {
-                    handleChangeServiceData(service.id, 'executorId', value);
-                  }}
-                />
-              </FormGroup>
+              <TimeInput
+                label="Hora Final"
+                placeholder="Hora Final"
+                value={service.endTime}
+                onChange={(value) => {
+                  handleChangeServiceData(service.id, 'endTime', value);
+                }}
+              />
+              <div className="stretch">
+                <FormGroup error={getErrorMessage(`services.${index}.executorId`)}>
+                  <Select
+                    label="Executante"
+                    placeholder="Selecione"
+                    options={executorOptions}
+                    selected={service.executorId}
+                    onSelect={(value) => {
+                      handleChangeServiceData(service.id, 'executorId', value);
+                    }}
+                  />
+                </FormGroup>
+              </div>
               <div className="stretch">
                 <TextArea
                   label="Descrição"
@@ -265,7 +276,6 @@ export function ServiceStep({
               />
               <Button
                 secondary
-                // className="right-side"
                 onClick={() => {
                   setAddMaterialServiceId(service.id);
                   setMaterialModalIsVisible(true);

@@ -11,6 +11,9 @@ const serviceSchema = z.object({
   id: z.string().uuid(),
   serviceId: z.string().uuid(),
   name: z.string(),
+  startDate: z.string().nonempty({
+    message: 'Data Inicial é obrigatório'
+  }),
   startTime: z.string().nonempty({
     message: 'Hora Inicial é obrigatório'
   }),

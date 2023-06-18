@@ -1,4 +1,4 @@
-type ServiceOrderStatus = 'OPEN' | 'CLOSED';
+type ServiceOrderStatus = 'OPEN' | 'CLOSED' | 'LAUNCHED' | 'SCHEDULED';
 
 export interface ServiceOrder {
   number: number | null;

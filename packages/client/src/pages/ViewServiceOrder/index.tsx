@@ -139,7 +139,7 @@ export function ViewServiceOrder() {
                 <div className="info">
                   <div>
                     <strong>Início</strong>
-                    <span>{moment(service.startTime).format('HH:mm')}</span>
+                    <span>{moment(service.startDate).add(3, 'h').format('DD/MM/YYYY')} - {moment(service.startTime).format('HH:mm')}</span>
                   </div>
                   {service.endDate && service.endTime && (
                     <div>

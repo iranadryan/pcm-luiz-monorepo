@@ -66,6 +66,11 @@ export const Container = styled.div<ContainerProps>`
       align-items: flex-end;
       justify-content: space-between;
 
+      .filters {
+        display: flex;
+        gap: 8px;
+      }
+
       .range-input {
         display: flex;
         align-items: center;
@@ -99,6 +104,7 @@ export const Container = styled.div<ContainerProps>`
           font-size: 40px;
           font-size: 600;
           line-height: 120%;
+          display: block;
         }
 
         span {

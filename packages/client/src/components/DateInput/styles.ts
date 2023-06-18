@@ -39,7 +39,7 @@ export const StyledInput = styled(InputMask)<StyledInputProps>`
 
   ${({ secondary }) => secondary && css`
     height: 36px;
-    width: 120px;
+    width: 108px;
     padding: 0 12px;
     font-size: 14px;
   `}

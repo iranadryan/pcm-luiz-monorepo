@@ -33,6 +33,7 @@ export interface Service {
   deleted: boolean;
   serviceId: string;
   name: string;
+  startDate: string;
   startTime: string;
   endTime: string;
   endDate: string;
@@ -157,6 +158,7 @@ export function EditServiceOrder() {
           deleted: false,
           serviceId: service.service.id,
           name: `${service.service.code} - ${service.service.name}`,
+          startDate: moment(service.startDate).add(3, 'h').format('DDMMYYYY'),
           startTime: moment(service.startTime).format('HHmm'),
           endDate: service.endDate ? moment(service.endDate).add(3, 'h').format('DDMMYYYY') : '',
           endTime: service.endTime ? moment(service.endTime).format('HHmm') : '',
@@ -210,6 +212,7 @@ export function EditServiceOrder() {
         deleted: service.deleted,
         serviceId: service.serviceId,
         executorId: service.executorId,
+        startDate: moment(service.startDate, 'DDMMYYYY').toDate(),
         startTime: moment(service.startTime, 'HHmm').toDate(),
         endDate: service.endDate ? moment(service.endDate, 'DDMMYYYY').toDate() : undefined,
         endTime: service.endTime ? moment(service.endTime, 'HHmm').toDate() : undefined,

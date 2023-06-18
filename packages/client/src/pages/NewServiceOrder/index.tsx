@@ -28,6 +28,7 @@ export interface Service {
   id: string;
   serviceId: string;
   name: string;
+  startDate: string;
   startTime: string;
   endTime: string;
   endDate: string;
@@ -144,6 +145,7 @@ export function NewServiceOrder() {
       services: data.services.map((service) => ({
         serviceId: service.serviceId,
         executorId: service.executorId,
+        startDate: moment(service.startDate, 'DDMMYYYY').toDate(),
         startTime: moment(service.startTime, 'HHmm').toDate(),
         endDate: service.endDate ? moment(service.endDate, 'DDMMYYYY').toDate() : undefined,
         endTime: service.endTime ? moment(service.endTime, 'HHmm').toDate() : undefined,

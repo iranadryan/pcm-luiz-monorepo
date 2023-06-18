@@ -53,6 +53,11 @@ export function ServiceOrderCard({
             LANÇADA
           </small>
         )}
+        {status === 'SCHEDULED' && (
+          <small className="scheduled">
+            PROGRAMADA
+          </small>
+        )}
         <button
           className="context-button"
           onClick={() => setContextMenuIsVisible(true)}

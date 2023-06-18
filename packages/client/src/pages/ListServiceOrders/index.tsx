@@ -79,6 +79,7 @@ export function ListServiceOrders() {
             { value: 'OPEN', label: 'Abertas' },
             { value: 'CLOSED', label: 'Fechadas' },
             { value: 'LAUNCHED', label: 'Lançadas' },
+            { value: 'SCHEDULED', label: 'Programadas' },
           ]}
           placeholder="Estado da ordem"
           selected={statusSelected}
@@ -91,7 +92,7 @@ export function ListServiceOrders() {
             onChange={(value) => setStartDate(value)}
           />
           <DateInput
-            placeholder="Até (Data Incial)"
+            placeholder="Até (Data Final)"
             value={endDate}
             onChange={(value) => setEndDate(value)}
           />
