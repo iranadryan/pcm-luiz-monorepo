@@ -17,8 +17,19 @@ import { TRPCError } from '@trpc/server';
 
 export const serviceOrderRouter = router({
   list: publicProcedure
+    .input(
+      z
+        .object({
+          startDate: z.date().nullable(),
+          endDate: z.date().nullable(),
+          status: z
+            .enum(['OPEN', 'CLOSED', 'LAUNCHED', 'SCHEDULED'])
+            .nullable(),
+        })
+        .optional(),
+    )
     .output(listOutputSchemaValidation)
-    .query(async () => {
+    .query(async ({ input }) => {
       const serviceOrders = await prisma.serviceOrder.findMany({
         select: {
           id: true,
@@ -37,84 +48,94 @@ export const serviceOrderRouter = router({
             },
           },
         },
-        orderBy: [
-          { startDate: 'desc' },
-          { startTime: 'desc' },
-        ]
+        where: {
+          ...(input && input.status && { status: input.status }),
+          ...(input &&
+            input.startDate && {
+              startDate: {
+                gte: moment.utc(input.startDate).subtract(3, 'h').toDate(),
+              },
+            }),
+          ...(input &&
+            input.endDate && {
+              endDate: {
+                lte: moment.utc(input.endDate).subtract(3, 'h').toDate(),
+              },
+            }),
+        },
+        orderBy: [{ startDate: 'desc' }, { startTime: 'desc' }],
       });
 
       return serviceOrders;
     }),
-  get: publicProcedure
-    .input(z.string())
-    .query(async ({ input }) => {
-      const serviceOrder = await prisma.serviceOrder.findUnique({
-        select: {
-          id: true,
-          number: true,
-          status: true,
-          startDate: true,
-          startTime: true,
-          endDate: true,
-          endTime: true,
-          odometer: true,
-          observation: true,
-          truck: {
-            select: {
-              plate: true,
-            },
+  get: publicProcedure.input(z.string()).query(async ({ input }) => {
+    const serviceOrder = await prisma.serviceOrder.findUnique({
+      select: {
+        id: true,
+        number: true,
+        status: true,
+        startDate: true,
+        startTime: true,
+        endDate: true,
+        endTime: true,
+        odometer: true,
+        observation: true,
+        truck: {
+          select: {
+            plate: true,
           },
-          driver: {
-            select: {
-              name: true,
-            },
-          },
-          ServiceOrderService: {
-            select: {
-              id: true,
-              description: true,
-              startDate: true,
-              startTime: true,
-              endDate: true,
-              endTime: true,
-              isEnded: true,
-              service: {
-                select: {
-                  code: true,
-                  name: true,
-                }
-              },
-              executor: {
-                select: {
-                  name: true,
-                }
-              },
-              ServiceOrderServiceMaterial: {
-                select: {
-                  id: true,
-                  quantity: true,
-                  material: {
-                    select: {
-                      code: true,
-                      name: true,
-                    }
-                  }
-                }
-              }
-            }
-          }
         },
-        where: {
-          id: input
-        }
-      });
+        driver: {
+          select: {
+            name: true,
+          },
+        },
+        ServiceOrderService: {
+          select: {
+            id: true,
+            description: true,
+            startDate: true,
+            startTime: true,
+            endDate: true,
+            endTime: true,
+            isEnded: true,
+            service: {
+              select: {
+                code: true,
+                name: true,
+              },
+            },
+            executor: {
+              select: {
+                name: true,
+              },
+            },
+            ServiceOrderServiceMaterial: {
+              select: {
+                id: true,
+                quantity: true,
+                material: {
+                  select: {
+                    code: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      where: {
+        id: input,
+      },
+    });
 
-      if (!serviceOrder) {
-        throw new Error(`Service order does not exists: ${input}`);
-      }
+    if (!serviceOrder) {
+      throw new Error(`Service order does not exists: ${input}`);
+    }
 
-      return serviceOrder;
-    }),
+    return serviceOrder;
+  }),
   create: publicProcedure
     .input(createInputSchemaValidation)
     .mutation(async ({ input }) => {
@@ -137,8 +158,8 @@ export const serviceOrderRouter = router({
       const serviceOrder = await prisma.serviceOrder.create({
         data: {
           ...serviceOrderInput,
-          status: isScheduled ? 'SCHEDULED' : undefined
-        }
+          status: isScheduled ? 'SCHEDULED' : undefined,
+        },
       });
 
       for (const service of services) {
@@ -162,7 +183,7 @@ export const serviceOrderRouter = router({
           await prisma.serviceOrderServiceMaterial.create({
             data: {
               ...material,
-              serviceOrderServiceId: serviceOrderService.id
+              serviceOrderServiceId: serviceOrderService.id,
             },
           });
         }
@@ -182,7 +203,7 @@ export const serviceOrderRouter = router({
           observation: true,
           truck: {
             select: {
-              id: true
+              id: true,
             },
           },
           driver: {
@@ -203,13 +224,13 @@ export const serviceOrderRouter = router({
                 select: {
                   id: true,
                   code: true,
-                  name: true
-                }
+                  name: true,
+                },
               },
               executor: {
                 select: {
                   id: true,
-                }
+                },
               },
               ServiceOrderServiceMaterial: {
                 select: {
@@ -220,16 +241,16 @@ export const serviceOrderRouter = router({
                       id: true,
                       code: true,
                       name: true,
-                    }
-                  }
-                }
-              }
-            }
-          }
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         where: {
-          id: input
-        }
+          id: input,
+        },
       });
 
       if (!serviceOrder) {
@@ -254,23 +275,27 @@ export const serviceOrderRouter = router({
 
       const serviceOrderExists = await prisma.serviceOrder.findUnique({
         where: {
-          id: serviceOrderId
-        }
+          id: serviceOrderId,
+        },
       });
 
       if (!serviceOrderExists) {
         throw new Error(`Service order does not exists: ${input}`);
       }
 
-      const isScheduled = serviceOrderExists.status !== 'SCHEDULED'
-        ? false
-        : services.reduce((value, curr) => {
-          if (curr.executorId === 'c5bcdd68-3c66-4bb9-b3fe-20d3316ae0d5' && !curr.deleted) {
-            return true;
-          }
+      const isScheduled =
+        serviceOrderExists.status !== 'SCHEDULED'
+          ? false
+          : services.reduce((value, curr) => {
+              if (
+                curr.executorId === 'c5bcdd68-3c66-4bb9-b3fe-20d3316ae0d5' &&
+                !curr.deleted
+              ) {
+                return true;
+              }
 
-          return false;
-        }, false);
+              return false;
+            }, false);
 
       const serviceOrder = await prisma.serviceOrder.update({
         where: {
@@ -278,8 +303,12 @@ export const serviceOrderRouter = router({
         },
         data: {
           ...serviceOrderInput,
-          status: isScheduled ? 'SCHEDULED' : serviceOrderExists.status === 'SCHEDULED' ? 'OPEN' : serviceOrderExists.status
-        }
+          status: isScheduled
+            ? 'SCHEDULED'
+            : serviceOrderExists.status === 'SCHEDULED'
+            ? 'OPEN'
+            : serviceOrderExists.status,
+        },
       });
 
       for (const service of services) {
@@ -294,7 +323,7 @@ export const serviceOrderRouter = router({
           endTime: service.endTime,
           description: service.description,
           isEnded: service.isEnded,
-          serviceOrderId: serviceOrder.id
+          serviceOrderId: serviceOrder.id,
         };
 
         if (!serviceOrderServiceId) {
@@ -317,17 +346,18 @@ export const serviceOrderRouter = router({
           if (service.deleted) {
             await prisma.serviceOrderService.delete({
               where: {
-                id: serviceOrderServiceId
-              }
+                id: serviceOrderServiceId,
+              },
             });
           } else {
-            const serviceOrderService = await prisma.serviceOrderService
-              .update({
+            const serviceOrderService = await prisma.serviceOrderService.update(
+              {
                 where: {
-                  id: serviceOrderServiceId
+                  id: serviceOrderServiceId,
                 },
                 data: serviceOrderServiceInput,
-              });
+              },
+            );
 
             for (const material of materials) {
               const serviceOrderServiceMaterialId = material.id;
@@ -345,8 +375,8 @@ export const serviceOrderRouter = router({
                 if (material.deleted) {
                   await prisma.serviceOrderServiceMaterial.delete({
                     where: {
-                      id: serviceOrderServiceMaterialId
-                    }
+                      id: serviceOrderServiceMaterialId,
+                    },
                   });
                 } else {
                   await prisma.serviceOrderServiceMaterial.update({
@@ -364,32 +394,30 @@ export const serviceOrderRouter = router({
 
       return serviceOrder;
     }),
-  delete: publicProcedure
-    .input(z.string())
-    .mutation(async ({ input }) => {
-      const serviceOrderExists = await prisma.serviceOrder.findUnique({
-        where: {
-          id: input
-        }
-      });
+  delete: publicProcedure.input(z.string()).mutation(async ({ input }) => {
+    const serviceOrderExists = await prisma.serviceOrder.findUnique({
+      where: {
+        id: input,
+      },
+    });
 
-      if (!serviceOrderExists) {
-        throw new Error(`Service order does not exists: ${input}`);
-      }
+    if (!serviceOrderExists) {
+      throw new Error(`Service order does not exists: ${input}`);
+    }
 
-      await prisma.serviceOrder.delete({
-        where: {
-          id: input
-        }
-      });
-    }),
+    await prisma.serviceOrder.delete({
+      where: {
+        id: input,
+      },
+    });
+  }),
   close: publicProcedure
     .input(closeInputSchemaValidation)
     .mutation(async ({ input }) => {
       const serviceOrderExists = await prisma.serviceOrder.findUnique({
         where: {
-          id: input.id
-        }
+          id: input.id,
+        },
       });
 
       if (!serviceOrderExists) {
@@ -398,21 +426,21 @@ export const serviceOrderRouter = router({
 
       const serviceOrder = await prisma.serviceOrder.update({
         where: {
-          id: input.id
+          id: input.id,
         },
         data: {
           endDate: input.endDate,
           endTime: input.endTime,
-          status: 'CLOSED'
-        }
+          status: 'CLOSED',
+        },
       });
       await prisma.serviceOrderService.updateMany({
         where: {
-          serviceOrderId: input.id
+          serviceOrderId: input.id,
         },
         data: {
           isEnded: true,
-        }
+        },
       });
 
       return serviceOrder;
@@ -422,8 +450,8 @@ export const serviceOrderRouter = router({
     .mutation(async ({ input }) => {
       const serviceOrderExists = await prisma.serviceOrder.findUnique({
         where: {
-          id: input.id
-        }
+          id: input.id,
+        },
       });
 
       if (!serviceOrderExists) {
@@ -439,148 +467,154 @@ export const serviceOrderRouter = router({
 
       const serviceOrder = await prisma.serviceOrder.update({
         where: {
-          id: input.id
+          id: input.id,
         },
         data: {
           number: input.number,
-          status: 'LAUNCHED'
-        }
+          status: 'LAUNCHED',
+        },
       });
 
       return serviceOrder;
     }),
-  export: publicProcedure
-    .input(z.string())
-    .mutation(async ({ input }) => {
-      const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
-      const reportUrl = `${baseUrl}/reports/${input}.pdf`;
-      const reportPath = path.resolve(__dirname, '..', '..', 'reports', `${input}.pdf`);
+  export: publicProcedure.input(z.string()).mutation(async ({ input }) => {
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
+    const reportUrl = `${baseUrl}/reports/${input}.pdf`;
+    const reportPath = path.resolve(
+      __dirname,
+      '..',
+      '..',
+      'reports',
+      `${input}.pdf`,
+    );
 
-      const serviceOrder = await prisma.serviceOrder.findUnique({
-        select: {
-          id: true,
-          number: true,
-          status: true,
-          startDate: true,
-          startTime: true,
-          endDate: true,
-          endTime: true,
-          odometer: true,
-          observation: true,
-          truck: {
-            select: {
-              plate: true,
+    const serviceOrder = await prisma.serviceOrder.findUnique({
+      select: {
+        id: true,
+        number: true,
+        status: true,
+        startDate: true,
+        startTime: true,
+        endDate: true,
+        endTime: true,
+        odometer: true,
+        observation: true,
+        truck: {
+          select: {
+            plate: true,
+          },
+        },
+        driver: {
+          select: {
+            name: true,
+          },
+        },
+        ServiceOrderService: {
+          select: {
+            id: true,
+            startTime: true,
+            endDate: true,
+            endTime: true,
+            service: {
+              select: {
+                code: true,
+                name: true,
+              },
+            },
+            executor: {
+              select: {
+                name: true,
+              },
+            },
+            ServiceOrderServiceMaterial: {
+              select: {
+                id: true,
+                quantity: true,
+                material: {
+                  select: {
+                    code: true,
+                    name: true,
+                  },
+                },
+              },
             },
           },
-          driver: {
-            select: {
-              name: true,
-            },
-          },
-          ServiceOrderService: {
-            select: {
-              id: true,
-              startTime: true,
-              endDate: true,
-              endTime: true,
-              service: {
-                select: {
-                  code: true,
-                  name: true,
-                }
-              },
-              executor: {
-                select: {
-                  name: true,
-                }
-              },
-              ServiceOrderServiceMaterial: {
-                select: {
-                  id: true,
-                  quantity: true,
-                  material: {
-                    select: {
-                      code: true,
-                      name: true,
-                    }
-                  }
-                }
-              }
-            }
-          }
         },
-        where: {
-          id: input
-        }
+      },
+      where: {
+        id: input,
+      },
+    });
+
+    if (!serviceOrder) {
+      throw new Error(`Service order does not exists: ${input}`);
+    }
+
+    const services: {
+      index: number;
+      name: string;
+      performer: string;
+      startTime: string;
+      endTime: string;
+      endDate: string;
+    }[] = [];
+    const materials: {
+      code: number;
+      name: string;
+      quantity: string;
+      activity: number;
+    }[] = [];
+
+    serviceOrder.ServiceOrderService.forEach((service, index) => {
+      services.push({
+        index: index + 1,
+        name: service.service.name,
+        performer: service.executor.name,
+        startTime: moment(service.startTime).subtract(3, 'h').format('HH:mm'),
+        endTime: moment(service.endTime).subtract(3, 'h').format('HH:mm'),
+        endDate: moment(service.endDate).format('DD/MM/YYYY'),
       });
 
-      if (!serviceOrder) {
-        throw new Error(`Service order does not exists: ${input}`);
-      }
-
-      const services: {
-        index: number;
-        name: string;
-        performer: string;
-        startTime: string;
-        endTime: string;
-        endDate: string;
-      }[] = [];
-      const materials: {
-        code: number;
-        name: string;
-        quantity: string;
-        activity: number;
-      }[] = [];
-
-      serviceOrder.ServiceOrderService.forEach((service, index) => {
-        services.push({
-          index: index + 1,
-          name: service.service.name,
-          performer: service.executor.name,
-          startTime: moment(service.startTime).subtract(3, 'h').format('HH:mm'),
-          endTime: moment(service.endTime).subtract(3, 'h').format('HH:mm'),
-          endDate: moment(service.endDate).format('DD/MM/YYYY'),
-        });
-
-        service.ServiceOrderServiceMaterial.forEach((material) => {
-          materials.push({
-            code: material.material.code,
-            name: material.material.name,
-            quantity: formatNumber(material.quantity),
-            activity: index + 1
-          });
+      service.ServiceOrderServiceMaterial.forEach((material) => {
+        materials.push({
+          code: material.material.code,
+          name: material.material.name,
+          quantity: formatNumber(material.quantity),
+          activity: index + 1,
         });
       });
+    });
 
-      const payload = {
-        template: {
-          name: 'ordem_servico'
-        },
-        data: {
-          orderNumber: serviceOrder.number,
-          plate: serviceOrder.truck.plate,
-          acumulatedKm: formatNumber(serviceOrder.odometer, ' KM'),
-          driver: serviceOrder.driver.name,
-          startDate: moment(serviceOrder.startDate).format('DD/MM/YYYY'),
-          endDate: moment(serviceOrder.endDate).format('DD/MM/YYYY'),
-          startTime: moment(serviceOrder.startTime).subtract(3, 'h').format('HH:mm'),
-          endTime: moment(serviceOrder.endTime).subtract(3, 'h').format('HH:mm'),
-          observation: serviceOrder.observation,
-          materials,
-          activities: services
-        }
-      };
+    const payload = {
+      template: {
+        name: 'ordem_servico',
+      },
+      data: {
+        orderNumber: serviceOrder.number,
+        plate: serviceOrder.truck.plate,
+        acumulatedKm: formatNumber(serviceOrder.odometer, ' KM'),
+        driver: serviceOrder.driver.name,
+        startDate: moment(serviceOrder.startDate).format('DD/MM/YYYY'),
+        endDate: moment(serviceOrder.endDate).format('DD/MM/YYYY'),
+        startTime: moment(serviceOrder.startTime)
+          .subtract(3, 'h')
+          .format('HH:mm'),
+        endTime: moment(serviceOrder.endTime).subtract(3, 'h').format('HH:mm'),
+        observation: serviceOrder.observation,
+        materials,
+        activities: services,
+      },
+    };
 
-      const { data } = await axios({
-        url: 'https://playground.jsreport.net/w/iranadryan/c5fdAGXS/api/report',
-        method: 'post',
-        data: payload,
-        responseType: 'arraybuffer'
-      });
+    const { data } = await axios({
+      url: 'https://playground.jsreport.net/w/iranadryan/c5fdAGXS/api/report',
+      method: 'post',
+      data: payload,
+      responseType: 'arraybuffer',
+    });
 
-      fs.writeFileSync(reportPath, data, 'binary');
+    fs.writeFileSync(reportPath, data, 'binary');
 
-      return reportUrl;
-    })
+    return reportUrl;
+  }),
 });
