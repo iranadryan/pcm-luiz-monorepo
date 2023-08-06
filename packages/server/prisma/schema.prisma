@@ -7,6 +7,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id       String  @id @default(uuid())
+  name     String
+  username String  @unique
+  password String
+  active   Boolean @default(true)
+  person   Person? @relation(fields: [personId], references: [id], onUpdate: Restrict, onDelete: Restrict)
+  personId String?
+  role UserRole
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  DRIVER
+  MECHANIC
+  ATTENDANT
+}
+
 model Truck {
   id           String         @id @default(uuid())
   name         String
@@ -29,6 +49,7 @@ model Person {
   role                PersonRole
   ServiceOrder        ServiceOrder[]
   ServiceOrderService ServiceOrderService[]
+  User                User[]
 
   @@map("people")
 }

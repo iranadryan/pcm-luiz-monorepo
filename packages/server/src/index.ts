@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import path from 'node:path';
@@ -12,6 +13,8 @@ import { personRouter } from './routers/person';
 import { serviceRouter } from './routers/service';
 import { serviceOrderRouter } from './routers/serviceOrder';
 import { serviceOrderDashboardRouter } from './routers/serviceOrderDashboard';
+import { authRouter } from './routers/auth';
+import { userRouter } from './routers/user';
 
 const appRouter = router({
   truck: truckRouter,
@@ -20,6 +23,8 @@ const appRouter = router({
   service: serviceRouter,
   serviceOrder: serviceOrderRouter,
   serviceOrderDashboard: serviceOrderDashboardRouter,
+  user: userRouter,
+  auth: authRouter,
 });
 const createContext = () => ({});
 
