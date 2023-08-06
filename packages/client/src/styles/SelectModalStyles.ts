@@ -17,6 +17,10 @@ export const SelectModalStyles = createGlobalStyle`
 
     @media (min-width: 768px) {
       left: calc(50% + 140px) !important;
+
+      &.modal {
+        left: 50% !important;
+      }
     }
 
     &.modal {

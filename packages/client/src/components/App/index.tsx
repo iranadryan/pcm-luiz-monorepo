@@ -28,6 +28,11 @@ import {
 } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { trpcUrl } from '../../lib/trpcClient';
+import { Login } from '../../pages/Login';
+import {
+  AuthContextProvider,
+  useAuthContext,
+} from '../../contexts/AuthContext';
 
 ChartJS.register(
   CategoryScale,
@@ -42,14 +47,17 @@ ChartJS.register(
 
 export function App() {
   const [queryClient] = useState(() => new QueryClient());
-  const [trpcClient] = useState(() => trpc.createClient({
-    transformer: SuperJSON,
-    links: [
-      httpBatchLink({
-        url: trpcUrl
-      })
-    ]
-  }));
+  const [trpcClient] = useState(() =>
+    trpc.createClient({
+      transformer: SuperJSON,
+      links: [
+        httpBatchLink({
+          url: trpcUrl,
+        }),
+      ],
+    }),
+  );
+  const { user } = useAuthContext();
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
@@ -57,11 +65,11 @@ export function App() {
         <ResponsiveContextProvider>
           <FilterContextProvider>
             <AppContainer>
-              <Sidebar />
+              {user && <Sidebar />}
               <Container>
                 <SelectModalStyles />
                 <GlobalStyles />
-                <Header />
+                {user && <Header />}
                 <Routes />
               </Container>
             </AppContainer>

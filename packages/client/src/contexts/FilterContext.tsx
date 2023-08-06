@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { createContext, useContext, useState } from 'react';
 
 interface FilterContextProviderProps {
@@ -20,9 +21,9 @@ const DEFAULT_VALUE: PropsFilterContext = {
   setStatusSelected: () => null,
   filterInput: '',
   setFilterInput: () => null,
-  startDate: '',
+  startDate: moment().subtract(1, 'week').format('DD/MM/YYYY'),
   setStartDate: () => null,
-  endDate: '',
+  endDate: moment().format('DD/MM/YYYY'),
   setEndDate: () => null,
 };
 
@@ -31,10 +32,12 @@ const FilterContext = createContext<PropsFilterContext>(DEFAULT_VALUE);
 export function FilterContextProvider({
   children,
 }: FilterContextProviderProps) {
-  const [statusSelected, setStatusSelected] = useState('ALL');
-  const [filterInput, setFilterInput] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [statusSelected, setStatusSelected] = useState(
+    DEFAULT_VALUE.statusSelected,
+  );
+  const [filterInput, setFilterInput] = useState(DEFAULT_VALUE.filterInput);
+  const [startDate, setStartDate] = useState(DEFAULT_VALUE.startDate);
+  const [endDate, setEndDate] = useState(DEFAULT_VALUE.endDate);
 
   return (
     <FilterContext.Provider

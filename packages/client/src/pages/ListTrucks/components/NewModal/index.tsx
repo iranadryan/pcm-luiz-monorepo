@@ -17,10 +17,10 @@ interface NewModalProps {
 
 const truckSchema = z.object({
   plate: z.string().nonempty({
-    message: 'Placa é obrigatório'
+    message: 'Placa é obrigatório',
   }),
   name: z.string().nonempty({
-    message: 'Nome é obrigatório'
+    message: 'Nome é obrigatório',
   }),
   type: z.enum(['TRACTOR_UNIT', 'SEMI_TRAILER']),
 });
@@ -55,13 +55,13 @@ export function NewModal({ isVisible, onClose, setIsLoading }: NewModalProps) {
       setIsLoading(false);
       toast({
         type: 'success',
-        text: `Placa ${parsedData.data.plate} criada com sucesso!`
+        text: `Placa ${parsedData.data.plate} criada com sucesso!`,
       });
       onClose(true);
     } catch (error: any) {
       toast({
         type: 'danger',
-        text: error.message
+        text: error.message,
       });
       setIsLoading(false);
     }

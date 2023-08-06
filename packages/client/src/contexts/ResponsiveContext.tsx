@@ -20,11 +20,9 @@ export function ResponsiveContextProvider({
   children,
 }: ResponsiveContextProviderProps) {
   const [headerHeight, setHeaderHeight] = useState(
-    window.innerWidth >= 768 ? '0px' : '92px'
+    window.innerWidth >= 768 ? '0px' : '92px',
   );
-  const [isMobile, setIsMobile] = useState(
-    window.innerWidth >= 768 ? false : true
-  );
+  const [isMobile, setIsMobile] = useState(!(window.innerWidth >= 768));
 
   useEffect(() => {
     function handleWindowResize() {

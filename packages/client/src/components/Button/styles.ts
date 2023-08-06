@@ -9,11 +9,11 @@ interface StyledButtonProps {
 export const StyledButton = styled.button<StyledButtonProps>`
   width: 100%;
   height: 52px;
-  background: #007F4E;
+  background: #007f4e;
   outline: none;
   border: none;
   border-radius: 4px;
-  color: #E7F0EB;
+  color: #e7f0eb;
   font-weight: 600;
   font-size: 16px;
   display: flex;
@@ -22,17 +22,23 @@ export const StyledButton = styled.button<StyledButtonProps>`
   justify-content: center;
   appearance: none;
 
-  ${({ secondary }) => secondary && css`
-    height: 40px;
-    font-size: 14px;
-  `}
+  ${({ secondary }) =>
+    secondary &&
+    css`
+      height: 40px;
+      font-size: 14px;
+    `}
 
-  ${({ danger }) => danger && css`
-    background: #E12729;
-  `}
+  ${({ danger }) =>
+    danger &&
+    css`
+      background: #e12729;
+    `}
 
-  ${({ tertiary }) => tertiary && css`
-    background: #CCCCCC;
-    color: #FFFFFF;
-  `}
+  ${({ tertiary }) =>
+    tertiary &&
+    css`
+      background: #cccccc;
+      color: #ffffff;
+    `}
 `;

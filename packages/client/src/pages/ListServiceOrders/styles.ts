@@ -2,11 +2,12 @@ import styled from 'styled-components';
 
 interface ContainerProps {
   headerHeight: string;
+  showFilters?: boolean;
 }
 
 export const Container = styled.div<ContainerProps>`
   display: grid;
-  grid-template-rows: 169px 25px 1fr;
+  grid-template-rows: ${({ showFilters }) => (showFilters ? 169 : 49)}px 25px 1fr;
   row-gap: 20px;
   height: calc(100% - ${({ headerHeight }) => headerHeight});
 
@@ -14,6 +15,20 @@ export const Container = styled.div<ContainerProps>`
     display: flex;
     flex-direction: column;
     gap: 12px;
+
+    .input-container {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      button {
+        padding: 4px;
+        display: flex;
+        background: transparent;
+        border: none;
+        outline: none;
+      }
+    }
 
     .date-filter {
       display: flex;
@@ -36,9 +51,11 @@ export const Container = styled.div<ContainerProps>`
     bottom: 24px;
     right: 24px;
     border-radius: 999px;
-    background: #007F4E;
+    background: #007f4e;
     border: none;
-    box-shadow: 0px 4px 12px 4px rgba(0, 60, 35, 0.2), 0px 1px 3px rgba(0, 0, 0, 0.15);
+    box-shadow:
+      0px 4px 12px 4px rgba(0, 60, 35, 0.2),
+      0px 1px 3px rgba(0, 0, 0, 0.15);
     z-index: 10;
     display: flex;
     align-items: center;

@@ -1,16 +1,18 @@
 import { Check } from 'phosphor-react';
 import { StyledCheckbox, Wrapper } from './styles';
+import { CSSProperties } from 'react';
 
 interface CheckboxProps {
   name: string;
   label: string;
   checked: boolean;
   onCheck: () => void;
+  style?: CSSProperties;
 }
 
-export function Checkbox({ name, label, checked, onCheck }: CheckboxProps) {
+export function Checkbox({ name, label, checked, onCheck, style }: CheckboxProps) {
   return (
-    <Wrapper>
+    <Wrapper style={style}>
       <StyledCheckbox id={name} checked={checked} onChange={() => onCheck()} />
       {checked && (
         <Check

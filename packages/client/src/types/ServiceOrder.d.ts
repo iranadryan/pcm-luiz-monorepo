@@ -1,14 +1,14 @@
-type ServiceOrderStatus = 'OPEN' | 'CLOSED' | 'LAUNCHED' | 'SCHEDULED';
+export type ServiceOrderStatus = 'OPEN' | 'CLOSED' | 'LAUNCHED' | 'SCHEDULED';
 
-export interface ServiceOrder {
+export interface IServiceOrder {
+  id: string;
   number: number | null;
   status: ServiceOrderStatus;
-  id: string;
+  startDate: Date;
+  endDate: Date | null;
   truck: {
     plate: string;
   };
-  startDate: Date;
-  endDate: Date | null;
   driver: {
     name: string;
   };
