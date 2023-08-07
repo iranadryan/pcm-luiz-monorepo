@@ -36,6 +36,18 @@ export const Container = styled.div<ContainerProps>`
     }
   }
 
+  .title {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    > span {
+      font-weight: 600;
+      font-size: 14px;
+      color: #48af7a;
+    }
+  }
+
   .cards-list {
     display: grid;
     gap: 12px;

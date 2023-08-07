@@ -18,6 +18,7 @@ import { ListUsers } from './pages/ListUsers';
 import { ServiceOrderDashboard } from './pages/ServiceOrderDashboard';
 import { Login } from './pages/Login';
 import { useAuthContext } from './contexts/AuthContext';
+import { UserConfig } from './pages/UserConfig';
 
 function PrivateRoutes() {
   const { user } = useAuthContext();
@@ -58,6 +59,7 @@ export function Routes() {
         <Route path="products" element={<ListProducts />} />
         <Route path="people" element={<ListPeople />} />
         <Route path="users" element={<ListUsers />} />
+        <Route path="user-config" element={<UserConfig />} />
       </Route>
     </RouterDomRoutes>
   );

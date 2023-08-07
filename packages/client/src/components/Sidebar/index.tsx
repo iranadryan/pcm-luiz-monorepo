@@ -1,12 +1,19 @@
 import { Container } from './styles';
 
 import Logo from '../../assets/images/logo.svg';
-import { NavLink } from 'react-router-dom';
-import { Clipboard, Gear } from 'phosphor-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { Clipboard, Gear, SignOut } from 'phosphor-react';
 import { useAuthContext } from '../../contexts/AuthContext';
+import { takeTwoNames } from '../../utils/takeTwoNames';
 
 export function Sidebar() {
-  const { user } = useAuthContext();
+  const { user, signOut } = useAuthContext();
+  const navigate = useNavigate();
+
+  function handleSignOut() {
+    signOut();
+    navigate('/login');
+  }
 
   return (
     <Container>
@@ -59,6 +66,17 @@ export function Sidebar() {
           )}
         </ul>
       </nav>
+      <div className="user-section">
+        <span>{takeTwoNames(user?.name || '')}</span>
+        <div className="actions">
+          {/* <button onClick={() => navigate('/user-config')}>
+            <GearSix color="#005125" size={20} weight="fill" />
+          </button> */}
+          <button onClick={handleSignOut}>
+            <SignOut color="#005125" size={20} weight="bold" />
+          </button>
+        </div>
+      </div>
     </Container>
   );
 }

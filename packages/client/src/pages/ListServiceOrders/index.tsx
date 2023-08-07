@@ -139,7 +139,12 @@ export function ListServiceOrders() {
           </>
         )}
       </div>
-      <Title title="ORDENS DE SERVIÇO" />
+      <div className="title">
+        <Title title="ORDENS DE SERVIÇO" />
+        {startDate && !endDate && <span>A partir de {startDate}</span>}
+        {!startDate && endDate && <span>Até {endDate}</span>}
+        {startDate && endDate && <span>{`${startDate} - ${endDate}`}</span>}
+      </div>
       <div className="cards-list">
         {serviceOrdersToShow.length === 0 && (
           <NoData

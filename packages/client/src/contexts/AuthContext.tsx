@@ -12,17 +12,23 @@ interface IAuthUser {
 type PropsAuthContext = {
   user: IAuthUser | null;
   setUser: (value: IAuthUser | null) => void;
+  signOut: () => void;
 };
 
 const DEFAULT_VALUE: PropsAuthContext = {
   user: null,
   setUser: () => null,
+  signOut: () => null,
 };
 
 const AuthContext = createContext<PropsAuthContext>(DEFAULT_VALUE);
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<IAuthUser | null>(null);
+
+  function signOut() {
+    setUser(null);
+  }
 
   useEffect(() => {
     const user = sessionStorage.getItem('user');
@@ -33,7 +39,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, setUser, signOut }}>
       {children}
     </AuthContext.Provider>
   );

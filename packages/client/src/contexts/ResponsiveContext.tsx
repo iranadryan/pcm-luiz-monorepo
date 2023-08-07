@@ -10,7 +10,7 @@ type PropsResponsiveContext = {
 };
 
 const DEFAULT_VALUE: PropsResponsiveContext = {
-  headerHeight: '92px',
+  headerHeight: '88px',
   isMobile: true,
 };
 
@@ -20,7 +20,7 @@ export function ResponsiveContextProvider({
   children,
 }: ResponsiveContextProviderProps) {
   const [headerHeight, setHeaderHeight] = useState(
-    window.innerWidth >= 768 ? '0px' : '92px',
+    window.innerWidth >= 768 ? '0px' : '88px',
   );
   const [isMobile, setIsMobile] = useState(!(window.innerWidth >= 768));
 
@@ -30,7 +30,7 @@ export function ResponsiveContextProvider({
         setHeaderHeight('0px');
         setIsMobile(false);
       } else {
-        setHeaderHeight('92px');
+        setHeaderHeight('88px');
         setIsMobile(true);
       }
     }
