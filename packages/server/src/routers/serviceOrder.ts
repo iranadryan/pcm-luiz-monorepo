@@ -51,15 +51,16 @@ export const serviceOrderRouter = router({
         where: {
           ...(input && input.status && { status: input.status }),
           ...(input &&
-            input.startDate && {
+            (input.startDate || input.endDate) && {
               startDate: {
-                gte: moment.utc(input.startDate).subtract(3, 'h').toDate(),
-              },
-            }),
-          ...(input &&
-            input.endDate && {
-              endDate: {
-                lte: moment.utc(input.endDate).subtract(3, 'h').toDate(),
+                ...(input &&
+                  input.startDate && {
+                    gte: input.startDate,
+                  }),
+                ...(input &&
+                  input.endDate && {
+                    lte: input.endDate,
+                  }),
               },
             }),
         },
